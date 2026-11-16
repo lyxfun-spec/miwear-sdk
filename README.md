@@ -1,6 +1,6 @@
 # MiWear SDK
 
-面向小米穿戴设备的实验性原生能力 SDK：提供页面、会话、线程、BLE 扫描/广播及固定通道 GATT 的固件适配与示例。聊天应用是后续上层消费者，当前没有聊天业务界面。
+面向小米穿戴设备的实验性原生能力 SDK：提供页面、会话、线程、BLE 扫描/广播及固定通道 GATT 的固件适配与示例。项目聚焦可复用的底层接口、固件适配和生命周期管理。
 
 Experimental native SDK for selected Xiaomi wearables and exact firmware profiles. Community project; not an official Xiaomi SDK.
 
