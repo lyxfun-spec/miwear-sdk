@@ -1,0 +1,17 @@
+G4R2 SDK PASS
+Cases passed/started: 4/4
+Sessions open/destroy: 4/4
+Live sessions/bytes: 0/0
+Connect/disconnect rounds: 10/8
+Read/write/notify: 10/32/32
+Tokens created/collected: 20/20
+Exit/join/barrier: 4/4/10
+Expected ATT error: 1
+Queue BUSY: 8
+Callback UI/active: 48/0
+Closed: 4
+Quiet ticks: 20
+Error: 0
+Manager timer: STOPPED
+Fixed TX cap: 20
+Module/runtime: HELD

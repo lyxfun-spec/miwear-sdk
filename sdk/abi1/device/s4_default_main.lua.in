@@ -1,0 +1,64 @@
+-- NS6 resident engineering page. Page BACK stops own sessions; no rmmod.
+local lvgl=require("lvgl")
+local NAME,ELF="ns_default_v6","/tmp/ns_default_v6.elf"
+local RESULT="/tmp/ns_default_v6_result.txt"
+local HEX,SIZE="@MODULE_HEX@",@MODULE_SIZE@
+local root=lvgl.Object(nil,{w=lvgl.HOR_RES(),h=lvgl.VER_RES(),bg_color=0x080E18,bg_opa=lvgl.OPA(100),border_width=0,pad_all=0})
+pcall(function()root:clear_flag(lvgl.FLAG.SCROLLABLE)end)
+local function font(size)local ok,f=pcall(function()return lvgl.Font("MiSans-Regular",size)end);return ok and f or nil end
+local function label(text,y,h,size)return lvgl.Label(root,{text=text,text_color=0xE5EDF6,width=350,height=h,text_font=font(size),align={type=lvgl.ALIGN.CENTER,x_ofs=0,y_ofs=y}})end
+label("S4 / NS6 PAGE",-158,32,23)
+label("Default release / SDK ABI1",-121,28,19)
+local screen=label("Tap ACTIVATE to start/read\nReturning here? tap again\nManager remains loaded",0,244,16)
+local button=lvgl.Object(root,{w=180,h=42,bg_color=0x1B3349,border_width=0,align={type=lvgl.ALIGN.CENTER,x_ofs=0,y_ofs=140}})
+button:add_flag(lvgl.FLAG.CLICKABLE)
+local caption=lvgl.Label(button,{text="ACTIVATE",text_color=0xFFFFFF,text_font=font(19),align=lvgl.ALIGN.CENTER})
+label("Policy 0 / manager held",180,24,16)
+local timer,busy,alive,finished=nil,false,true,false
+local function write(path,data)local f=assert(io.open(path,"wb"));assert(f:write(data));assert(f:close())end
+local function read(path)local f=assert(io.open(path,"rb"));local t=f:read(16384)or"";f:close();return t end
+local function command(cmd,tag)
+ local path="/tmp/ns_default_v6_"..tag..".txt";write(path,"PENDING")
+ local ok,r=pcall(os.execute,cmd.." > "..path)
+ return ok and(r==true or r==0),read(path)
+end
+local function listed(tag)
+ local ok,data=command("lsmod",tag);assert(ok and #data>0 and data~="PENDING","lsmod unavailable")
+ return data:find(NAME,1,true)~=nil
+end
+local function fail(why)
+ finished=true;if timer then timer:pause()end
+ screen:set{text="NS6 PAGE CHECK\n"..tostring(why):sub(1,170).."\nStop and report text"};caption:set{text="CHECK"}
+end
+local function pair(x)return(x&0xffff).."/"..(x>>16)end
+local function balanced(x)return(x&0xffff)>=3 and(x&0xffff)==(x>>16)end
+local polls=0
+local function poll()
+ if finished or not alive then return end;polls=polls+1
+ local data=read(RESULT);assert(data:match("^NS6 "),"native report unavailable")
+ local v={};for x in data:gmatch("%d+")do v[#v+1]=tonumber(x)end;table.remove(v,1)
+ assert(#v==20 and v[1]==0x4e533652,"native report malformed")
+ local pass=v[17]==1 and v[18]==0x4e533650 and v[13]==0 and v[14]==0 and v[15]==1 and v[16]==7 and v[19]==6 and v[20]==1
+ for i=3,8 do pass=pass and balanced(v[i])end
+ if v[3]==0 and v[16]==7 and v[13]==0 and v[14]==0 then
+  screen:set{text="ENTRY READY\nSwitch to ordinary face\nApps: S4 NS6 Native\nWait READY -> BACK\nNo forced reopen delay\n3 READY/BACK cycles\nReturn here; tap ACTIVATE"};caption:set{text="ENTRY READY"}
+ else
+  screen:set{text="NS6 PAGE "..(pass and"PASS"or"WAIT / CHECK").."\nUI create/destroy: "..pair(v[3]).."\nResume/pause: "..pair(v[4]).."\nSessions/free: "..pair(v[5]).."\nScan start/stop: "..pair(v[6]).."\nAdv start/stop: "..pair(v[7]).."\nBarrier/join: "..pair(v[8]).."\nDeferred reopen: "..v[11].."\nErrors: "..v[13].."/"..v[14].."\nEntry retained: "..(v[16]==7 and"YES"or"NO").."\nRuntime held: YES"}
+  caption:set{text=pass and"NS6 PAGE PASS"or"WAIT / CHECK"}
+ end
+ if pass or v[13]~=0 or v[14]~=0 then finished=true;timer:pause()end
+end
+local function start()
+ local ok,version=command("getprop ro.build.version","version")
+ assert(ok and version:match("^%s*3%.111%.032%s*$"),"firmware mismatch")
+ if listed("before")then caption:set{text="OBSERVE"};timer:resume();return end
+ local bytes=HEX:gsub("..",function(h)return string.char(tonumber(h,16))end)
+ assert(#bytes==SIZE,"ELF size mismatch");write(ELF,bytes);write(RESULT,"PENDING")
+ local loaded=command("insmod "..ELF.." "..NAME,"load");assert(loaded and listed("loaded"),"insmod failed")
+ caption:set{text="RUNNING"};timer:resume()
+end
+timer=lvgl.Timer({period=500,cb=function()local ok,why=pcall(poll);if not ok then fail(why)end end});timer:pause()
+button:onevent(lvgl.EVENT.CLICKED,function()
+ if busy then return end;busy=true;local ok,why=pcall(start);if not ok then fail(why)end
+end)
+root:onevent(lvgl.EVENT.DELETE,function()alive=false;pcall(function()timer:pause()end)end)

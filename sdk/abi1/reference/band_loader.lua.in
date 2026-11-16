@@ -1,0 +1,292 @@
+-- B4 uses Canopus recover_execute.lua under AGPL-3.0-only; see NOTICE and LICENSE.
+-- Exact .179 only. No arbitrary function pointer creation or native ELF loading.
+local recovery = (function()
+-- Embedded by build_band11_installer.py. Firmware addresses come from the
+-- exact target's loader/lua-recovery.toml; no numeric-to-function conversion.
+local M = {}
+local STATE_KEY = "canopus.band11.execute_recovery.v1"
+
+local function address(fn)
+    if type(fn) ~= "function" then return nil end
+    local text = tostring(fn)
+    -- NuttX libc variants differ on the %p prefix. Accept both hexadecimal
+    -- renderings, but still require the exact function label and address.
+    local hex = text:match("^function:%s*0[xX](%x+)$")
+        or text:match("^function:%s*(%x+)$")
+    local value = hex and tonumber(hex, 16)
+    return value and value - value % 2
+end
+
+local function read_identity(path)
+    if type(io) ~= "table" or type(io.open) ~= "function" then return nil end
+    local ok, file = pcall(io.open, path, "rb")
+    if not ok or not file then return nil end
+    local read_ok, content = pcall(file.read, file, 4097)
+    local close_ok, closed = pcall(file.close, file)
+    if not read_ok or not close_ok or not closed or
+       type(content) ~= "string" or #content > 4096 then return nil end
+    local properties = {}
+    for line in (content .. "\n"):gmatch("([^\n]*)\n") do
+        local key, value = line:gsub("\r$", ""):match("^([^=]+)=(.*)$")
+        if key then
+            if properties[key] ~= nil then return nil end
+            properties[key] = value
+        end
+    end
+    return properties
+end
+
+function M.select_profile(profiles)
+    local properties = read_identity("/etc/build.prop")
+    local profile = properties and profiles[properties["ro.build.version"]]
+    if not profile then return nil, "Firmware identity unreadable or unsupported" end
+    if properties["ro.build.id"] ~= profile.firmware_build then
+        return nil, "Firmware identity mismatch"
+    end
+    return profile
+end
+
+function M.recover(profile)
+    local properties = read_identity(profile.identity_path)
+    if not properties or properties["ro.build.version"] ~= profile.firmware_version
+       or properties["ro.build.id"] ~= profile.firmware_build then
+        return nil, "Firmware identity mismatch or unreadable"
+    end
+    if _VERSION ~= profile.lua_version then return nil, "Lua version mismatch" end
+    local D = debug
+    if type(D) ~= "table" then return nil, "Lua debug interface unavailable" end
+    for _, key in ipairs({"getinfo", "getlocal", "getregistry", "getmetatable",
+                           "setmetatable"}) do
+        if type(D[key]) ~= "function" then return nil, "Lua debug interface incomplete" end
+    end
+    local old_os = os
+    if type(old_os) ~= "table" then return nil, "OS library unavailable" end
+    if type(old_os.execute) == "function" then
+        if address(old_os.execute) ~= profile.os_execute then
+            return nil, "Unexpected execute implementation"
+        end
+        return old_os.execute, "Native execute available"
+    end
+
+    local registry = D.getregistry()
+    if rawget(registry, STATE_KEY) then
+        return nil, "Recovery already attempted; reload requires a new Lua state"
+    end
+    local init, path, loop, root
+    -- Read at the same depth as getinfo. On first initialization the firmware's
+    -- loop-context getter pops the original third argument (0x0c6c8a34).
+    -- pmain then puts its error handler in slot 3 before calling the script.
+    for level = 2, 32 do
+        local info = D.getinfo(level, "fS")
+        if not info then break end
+        if info.what == "C" and address(info.func) == profile.pmain then
+            init = info.func
+            local _
+            _, path = D.getlocal(level, 1)
+            _, loop = D.getlocal(level, 2)
+            _, root = D.getlocal(level, 3)
+            break
+        end
+    end
+    if not init then return nil, "Initial pmain frame unavailable" end
+    local cached_root = false
+    if type(path) == "string" and type(loop) == "userdata" and
+       type(root) == "function" and address(root) == profile.pmain_error_handler then
+        root = rawget(registry, "luavgl_key")
+        -- This exact firmware creates a 16-byte full userdata with one nil
+        -- uservalue and no metatable. Its first three words are the original
+        -- root object and callbacks. Do not substitute arbitrary userdata.
+        if type(root) ~= "userdata" or type(D.getuservalue) ~= "function" or
+           D.getmetatable(root) ~= nil then return nil, "Root context unavailable" end
+        local valid, value, present = pcall(D.getuservalue, root, 1)
+        if not valid then return nil, "Unexpected root context" end
+        local _, extra = D.getuservalue(root, 2)
+        if not present or value ~= nil or extra then
+            return nil, "Unexpected root context"
+        end
+        cached_root = true
+    end
+    if type(path) ~= "string" or type(loop) ~= "userdata" or
+       type(root) ~= "userdata" then
+        return nil, "Unexpected pmain arguments: " .. type(path) .. "/" ..
+            type(loop) .. "/" .. type(root)
+    end
+    local loaded = rawget(registry, "_LOADED")
+    if type(loaded) ~= "table" or rawget(loaded, "os") ~= old_os or
+       D.getmetatable(loaded) ~= nil then return nil, "Unexpected module registry" end
+    if cached_root and not rawget(loaded, "lvgl") then
+        return nil, "LVGL initialization unavailable"
+    end
+
+    local stop, saved = {}, nil
+    rawset(registry, STATE_KEY, {status = "attempted"})
+    D.setmetatable(loaded, {
+        __newindex = function(t, key, value)
+            if key == "os" then
+                if type(value) == "table" then saved = rawget(value, "execute") end
+                -- Stop before package-path edits, repeated io wrappers and
+                -- recursive script execution. One native strdup is leaked;
+                -- see the exact-target audit. Never retry this reentry.
+                error(stop, 0)
+            end
+            rawset(t, key, value)
+        end,
+    })
+    rawset(loaded, "os", nil)
+    -- luavgl_key's fourth word is a destructor, whereas the original root
+    -- argument's fourth word is dataman. pmain only stores this word in the
+    -- registry userdata before our sentinel. Give it a temporary dataman
+    -- entry so the live dataman payload is never overwritten; restore on both
+    -- success and failure. See loader/pmain-startup-fix-2026-09-10.md.
+    local old_dataman = rawget(registry, "dataman.meta")
+    if cached_root then rawset(registry, "dataman.meta", nil) end
+    local ok, err = pcall(init, path, loop, root)
+    if cached_root then rawset(registry, "dataman.meta", old_dataman) end
+    D.setmetatable(loaded, nil)
+    rawset(loaded, "os", old_os)
+    rawset(_G, "os", old_os)
+    if ok or err ~= stop then return nil, "OS initialization was not intercepted" end
+    if address(saved) ~= profile.os_execute or
+       D.getinfo(saved, "S").what ~= "C" then
+        return nil, "Recovered execute address mismatch"
+    end
+    rawset(old_os, "execute", saved)
+    rawset(registry, STATE_KEY, {status = "recovered"})
+    return saved, "Native execute restored; device test pending"
+end
+
+return M
+
+end)()
+local PROFILE = {
+ target_id="xiaomi-band-11-nfc-4.100.179", identity_path="/etc/build.prop",
+ firmware_version="4.100.179",firmware_build="user-4.100.179-cn-202609302100",
+ lua_version="Lua 5.4",pmain=0x0c6d178c,pmain_error_handler=0x0c6cd0ac,
+ os_execute=0x0c716140,io_open=0x0c715d68,
+}
+local function pointer(f)
+ if type(f)~="function" then return nil end
+ local h=tostring(f):match("^function:%s*0[xX](%x+)$") or tostring(f):match("^function:%s*(%x+)$")
+ local p=h and tonumber(h,16);return p and p-p%2
+end
+local lines={}
+local execute, original_open
+local function add(s) lines[#lines+1]=s end
+local function prepare()
+ assert(type(io)=="table" and type(io.open)=="function","IO unavailable")
+ assert(type(debug)=="table" and type(debug.getupvalue)=="function","debug unavailable")
+ local _,f=debug.getupvalue(io.open,1)
+ -- .179's path-checking Lua wrapper must retain the exact native opener.
+ assert(pointer(f)==PROFILE.io_open,"IO fingerprint mismatch")
+ original_open=f
+ local profile,why=recovery.select_profile({[PROFILE.firmware_version]=PROFILE})
+ assert(profile,why);add("Guard: OK")
+ execute,why=recovery.recover(profile)
+ assert(type(execute)=="function",why)
+ add("Restore: OK")
+ add("Exec: "..tostring(execute):gsub("^function:%s*",""))
+end
+local ok,err=pcall(prepare)
+local prepared=ok
+if not ok then add("RESULT: B12 STOP");add(tostring(err):sub(1,140)) end
+-- B4: exact guarded cache maintenance and one synchronous owned native call.
+local saved
+local function keep(value) return function() return value end end
+local function ptr(x)
+ local h=tostring(x):match("0[xX](%x+)$") or tostring(x):match(":%s*(%x+)$")
+ return h and tonumber(h,16)
+end
+local lvgl=require("lvgl")
+local root=lvgl.Object(nil,{w=lvgl.HOR_RES(),h=lvgl.VER_RES(),bg_color=0x080e18,
+ bg_opa=lvgl.OPA(100),border_width=0,pad_all=0})
+pcall(function()root:clear_flag(lvgl.FLAG.SCROLLABLE)end)
+local function label(text,y,h,size,color)
+ local props={text=text,text_color=color,width=lvgl.HOR_RES()-18,height=h,
+ align={type=lvgl.ALIGN.CENTER,x_ofs=0,y_ofs=y}}
+ local ok,font=pcall(function()return lvgl.Font("MiSans-Regular",size)end)
+ if ok and font then props.text_font=font end
+ return lvgl.Label(root,props)
+end
+label("B11 NFC / NS1",-214,28,17,0x78ddf0)
+label("Session core checks",-183,24,15,0xb7c8da)
+local screen=label("Starting...",8,320,13,0xe5edf6)
+local verdict=label("Tap screen: RUN once",194,24,13,0x78ddf0)
+label("No BLE / no workers",222,20,11,0x8397ad)
+-- B2's initialization report may contain a useful failure. Keep it on STOP.
+if not prepared then screen:set{text=table.concat(lines,"\n")};return end
+lines={"Guard / restore: OK"}
+local alive,timer=true,nil
+local ready,armed=false,false
+local function paint()if alive then screen:set{text=table.concat(lines,"\n")}end end
+local function progress(s)paint();coroutine.yield(s)end
+local function word(address)
+ assert(type(address)=="number" and address%4==0,"Unaligned read")
+ progress("Read "..string.format("%08x",address))
+ local path="/tmp/b11_ns1_word.txt"
+ local f=assert(original_open(path,"wb"));assert(f:write("PENDING"));assert(f:close())
+ local ok,ret=pcall(execute,string.format("mw %08x 4 > %s",address,path))
+ assert(ok and(ret==true or ret==0),"MW command failed")
+ f=assert(original_open(path,"rb"));local text=f:read(512)or"";f:close()
+ local h=text:match("=%s*0[xX](%x+)")or text:match("%-%>%s*0[xX](%x+)")
+ local v=h and tonumber(h,16)
+ assert(v and v<=0xffffffff,"MW response: "..text:sub(1,70))
+ return v
+end
+@RPC@
+local function work()
+ assert(lvgl.ALIGN.CENTER==9,"Alignment enum differs")
+ local f=assert(original_open("/proc/48/status","rb"),"Expected UI task unavailable")
+ local good,text=pcall(f.read,f,1024);pcall(f.close,f)
+ assert(good and type(text)=="string"and ("\n"..text):match("\nName:[ \t]*miwear[ \t]*[\r\n]"),"UI task name differs; no native run")
+ local ctrl=word(0xe000ed94);add("MPU: "..ctrl);assert(ctrl==5,"MPU differs")
+ local attr=word(0xe000edc0);add("MAIR: "..string.format("%08x",attr));assert(attr==0x00447722,"MAIR differs")
+ local bitmap=word(0x200f4080);add("Slots: "..string.format("%08x",bitmap));assert((bitmap&0x7f)==0x0f,"MPU slots occupied")
+ assert(word(0x200b2330)==0x3c356b40,"Heap descriptor differs")
+ local lo,hi=word(0x3c356b5c),word(0x3c356b60)
+ assert(lo>=0x3c000000 and hi>lo and hi<=0x3d000000,"Heap bounds differ")
+ add("Heap: OK")
+ local fp={{0xc0c1808,0xf012681a},{0xc0c180c,0xf04f0f01},{0xc0c181c,0x4b024770},{0xc0c1820,0xbf00e7f2},{0xc0c1828,0x7ffa000},{0xc33c978,0x6840b580},{0xc33c97c,0x4298af00},{0xc33c980,0xe9d0bf1d},{0xc33c984,0x60133200},{0xc33c988,0x20006842},{0xc33c98c,0x605abf1e},{0xc33c990,0xe9c02300},{0xc33c994,0xbd803300},{0xc33c998,0x41f0e92d},{0xc348784,0xaf00b580},{0xc348788,0x220cb128},{0xc34878c,0xf3d84903},{0xc348790,0x2000fe3f},{0xc3487b4,0xb580e7fc},{0xc3487b8,0xb120af00},{0xc3487bc,0xd90229ff},{0xc3487c0,0x20006081},{0xc349468,0x4b05b580},{0xc34946c,0x681aaf00},{0xc349478,0x6e50f300},{0xc349480,0x200b0364},{0xc34c990,0xb082b580},{0xc34c9d8,0x4629fe07},{0xc34ca08,0xb5804602},{0xc34ca10,0x2139b91a},{0xc34ca18,0x4790f030},{0xc34cb8c,0xb085b590},{0xc34cb94,0x4b0eb1b0},{0xc34cbb0,0x60bb4638},{0xc34cbbc,0x2800d005},{0xc34cbe0,0xaf00b598},{0xc34cbe4,0x69c4b169},{0xc34cbec,0x42916a02},{0xc34cbf0,0x2200d305},{0xc34cc7c,0x4b03b580},{0xc34cc80,0xaf004601},{0xc34cc84,0xf7ff6818},{0xc350c40,0x4b03b580},{0xc350c48,0xf7ff6818},{0xc350c50,0x200b0070},{0xc350c54,0x4ff0e92d},{0xc350c58,0x4d5cb089},{0xc350c60,0xf8d54a5b},{0xc350c6c,0x460e4681},{0xc350c98,0xf7ff20d0},{0xc350cd8,0x2301e9d6},{0xc350d4c,0x4a239300},{0xc350d68,0x4b1df82e},{0xc350da8,0xd0020f00},{0xc350db0,0x46203000},{0xc3514ec,0x4b07b598},{0xc3514f0,0xaf004601},{0xc3514f4,0xf7fe6818},{0xc3514fc,0xf7f7b918},{0xc35485c,0x4605b5f8},{0xc3548b4,0xf7f84620},{0xc3548bc,0x47f0e92d},{0xc3548d4,0xb10c6b2c},{0xc354908,0xf928f7f9},{0xc354c4c,0x4603b580},{0xc354c5c,0x68104a0a},{0xc354c68,0x3a016812},{0xc354c74,0x429a6ac2},{0xc359764,0x43f0e92d},{0xc35976c,0xaf004b25},{0xc359784,0xfa62f7fb},{0xc359790,0x46492300},{0xc35979c,0x6879bb60},{0xc3597a4,0x46406023},{0xc3597c4,0xd11b4542},{0xc3597d8,0x46306103},{0xc359b9c,0x43f0e92d},{0xc359bdc,0xf8c09000},{0xc359bec,0x46306c23},{0xc359c40,0x23014629},{0xc359c50,0xf8c3687b},{0xc370d88,0xf26ef149},{0xc381090,0x6880b580},{0xc382218,0xe92dbd90},{0xc38221c,0xb08841f0},{0xc382238,0x432b6ae3},{0xc383f3c,0x4ff0e92d},{0xc383f40,0xb085460e},{0xc3a4644,0x460bb5b0},{0xc3a4648,0xb140af00},{0xc3a468c,0x4622f86d},{0xc3a4690,0xe7e64629},{0xc3a49ec,0x4291b5f8},{0xc3a49f0,0x4615460c},{0xc3a4a2c,0x6044b906},{0xc3a4a30,0x6886bdf8},{0xc3aa2ec,0xb580bd80},{0xc3aa2f0,0xaf006101},{0xc3aa2f4,0xb580bd80},{0xc3ab22c,0x4601b598},{0xc3ab230,0x4804af00},{0xc3abc88,0x41f0e92d},{0xc3abc8c,0xaf004606},{0xc3abcb0,0xf7fe6086},{0xc3abcc4,0xf88360e5},{0xc3abdd8,0x4d06b5b0},{0xc3abddc,0x46014604},{0xc3abde4,0xfc2ef7f8},{0xc3abde8,0x46202301},{0xc3ac480,0x4ff0e92d},{0xc3ac580,0x4628b10e},{0xc3ac584,0x464e4798},{0xc3ac588,0x308af894},{0xc3ac58c,0x692bb93b},{0xc3ac598,0xf7ff4628},{0xc3b38b0,0x41f0e92d},{0xc3b38b4,0xaf00460d},{0xc3f45a4,0x62e30208},{0xc3f45c4,0x63626326},{0xc3f5104,0xaf00b580},{0xc3f5108,0xfc27f758},{0xc3f510c,0x2200b128},{0xc3f5110,0x217ef240},{0xc3f5114,0xf1224801},{0xc3f5118,0xbd80f4b0},{0xc3f511c,0x2cb22620},{0xc3f5120,0xaf00b580},{0xc3f5124,0xfa30f75a},{0xc3f5128,0x2200b128},{0xc3f512c,0x7121f44f},{0xc3f5130,0xf1224801},{0xc3f5134,0xbd80f4a2},{0xc3f5138,0x2cb22620},{0xc3f513c,0x4604b598},{0xc3f5140,0x4620af00},{0xc3f5144,0xfcd5f758},{0xc3f5148,0xd10a1c43},{0xc3f514c,0xf99cf754},{0xc3f5150,0x2b046803},{0xc3f5154,0x2200d0f5},{0xc3f5158,0x7124f44f},{0xc3f515c,0xf1224802},{0xc3f5160,0x2800f48c},{0xc3f5164,0xbd98d1f7},{0xc463bd4,0x1217f240},{0xc463bd8,0x461cb5b0},{0xc463be0,0xd0044293},{0xc463bec,0x6be5bdb0},{0xc463bf0,0x2045f894},{0xc463bf8,0xf894685b},{0xc463c00,0x3045f894},{0xc463c08,0xf838f6e9},{0xc463c10,0xf8946ce5},{0xc463c18,0x689b4628},{0xc463c1c,0xe7f24798},{0xc463f78,0xe92dbd98},{0xc463f84,0xf5b3af00},{0xc463fa0,0x300d6be6},{0xc463fb4,0x151f104},{0xc463fc4,0x462968f3},{0xc463fd0,0xfe54f6e8},{0xc463fd4,0xf8d4e00b},{0xc463fdc,0x68eb115c},{0xc463fe0,0x689b4628},{0xc463fe8,0x2b00315c},{0xc463ff8,0x4164f8d4},{0xc464000,0x479868db},{0xc464004,0xe7e34620},{0xc464154,0x4604b598},{0xc464158,0x3000e9d0},{0xc46415c,0x4798af00},{0xc464160,0x8f104},{0xc464164,0xffdcf790},{0xc4642f4,0x6805b5f8},{0xc4642f8,0xf105af00},{0xc4642fc,0x35bc0684},{0xc464300,0xf7904630},{0xc464304,0x4628fc2d},{0xc464308,0xfb35f6d8},{0xc46430c,0x46304604},{0xc464310,0xfc34f790},{0xc464314,0xe9d4b134},{0xc464318,0x47983002},{0xc46431c,0xf6e84620},{0xc464320,0xe7edfcad},{0xc465cd4,0x41f0e92d},{0xc465cd8,0xaf006805},{0xc465cdc,0x46882010},{0xc465ce0,0xf6eb4616},{0xc465ce4,0x4604fc03},{0xc465ce8,0x4602b928},{0xc465cec,0x113bf240},{0xc465cf0,0xf0b1480e},{0xc465cf4,0xe9c0f6c2},{0xc465cf8,0xf1058602},{0xc465cfc,0x46300684},{0xc465d00,0xff2ef78e},{0xc465d04,0xf853462b},{0xc465d08,0x46302fbc},{0xc465d0c,0x2300e9c4},{0xc465d10,0x30bcf8d5},{0xc465d14,0xf8c5605c},{0xc465d18,0xf78e40bc},{0xc465d1c,0xf105ff2f},{0xc465d20,0xf78f0040},{0xc465d24,0xe8bdfca1},{0xc467848,0xb083b5f0},{0xc46784c,0x46044916},{0xc467850,0x2502e9d0},{0xc467870,0x18639000},{0xc467878,0x462047a8},{0xc46787c,0xf9fef6e5},{0xc4678b4,0x6805b5f8},{0xc46a0f4,0xb3436ba3},{0xc46a18c,0x43f0e92d},{0xc46a1a4,0x46480908},{0xc46a1ac,0x64a5602e},{0xc46a200,0x2500dcd6},{0xc46b514,0x47f0e92d},{0xc46b518,0x7d32f5ad},{0xc46b52c,0xf6e52010},{0xc46b534,0xf8d7b1a0},{0xc46b53c,0x23006043},{0xc46b544,0x48f107},{0xc46b54c,0xf5b5ff61},{0xc46b57c,0x5064f8a7},{0xc46b594,0x46302243},{0xc46b59c,0xf7fe8066},{0xc46b5a8,0x2304e9d7},{0xc46b5b0,0xe9c4d0d3},{0xc46b5b8,0xf5adb580},{0xc46b5c0,0x643baf00},{0xc46b5c8,0x647b2244},{0xc46b5cc,0xfddef7fe},{0xc46b600,0xe92dbd80},{0xc46b604,0x460543f0},{0xc46b630,0x900cf8c0},{0xc46b634,0x64382205},{0xc46b638,0xf1074641},{0xc46b648,0xf1074631},{0xc46b650,0x22edfedf},{0xc46b658,0xfd98f7fe},{0xc46b660,0x2304e9d7},{0xc46b684,0xf5adb580},{0xc46b690,0x22ee684b},{0xc46b698,0xfd78f7fe},{0xc46cc08,0x43f0e92d},{0xc46cc1c,0xf6e47004},{0xc46cdf4,0x41f0e92d},{0xc46ce38,0x42b368a3},{0xc46ce50,0x2008327c},{0xc46ce54,0x20083274},{0xc4f71ac,0x4604b5b0},{0xc4f71b8,0x4620f84d},{0xc505fb0,0xb5f02238},{0xc50602c,0x463ab123},{0xc5415cc,0x4b02b580},{0xc5415d0,0x685baf00},{0xc5415dc,0x4b02b580},{0xc5415e0,0x681baf00},{0xc5416f8,0x4604b598},{0xc5416fc,0x46102300},{0xc54173c,0x699bb280},{0xc541740,0xe7ed4798},{0xc54174c,0x4b02b580},{0xc541750,0x681baf00},{0xc541754,0xbd804798},{0xc541758,0x200c5d78},{0xc5467b4,0x4ff8e92d},{0xc5467b8,0xb100f8df},{0xc5468a0,0x68333080},{0xc5468a4,0x685d442b},{0xc546b74,0xb083b5f0},{0xc546b78,0xaf024604},{0xc546c68,0xf3630380},{0xc546c6c,0x762a0241},{0xc548328,0x4604b598},{0xc54832c,0x2006af00},{0xc5489a8,0x4604b598},{0xc5489ac,0x2006af00},{0xc54947c,0x601c4ab6},{0xc549480,0x49b74bb6},{0xc549490,0x605a4ab6},{0xc549494,0xe8bd46bd},{0xc691dd8,0xb5b0bd80},{0xc691e10,0xf8842308},{0xc691e28,0x4604b5b0},{0xc691e50,0x6dda4623},{0xc691e70,0xb5b0e7f3},{0xc691f10,0x460db5b0},{0xc691f80,0x460cb5b0},{0xc691f84,0xb0844605},{0xc69200c,0xf95ef019},{0xc692010,0xf4e64620},{0xc693e8c,0x4603b580},{0xc693e90,0xb130af00},{0xc693e94,0x69424803},{0xc693e9c,0x28006c40},{0xc694c44,0xb082b5b0},{0xc694c48,0xaf024604},{0xc694d20,0x681be79b},{0xc694d24,0xd1f52b00},{0xc694ec4,0xb084b5b0},{0xc694ef4,0x6b254790},{0xc694efc,0x2300fac5},{0xc694f30,0x41f0e92d},{0xc694f8c,0x68304e2b},{0xc694fdc,0x47986b21},{0xc695000,0xf8842305},{0xc695060,0x4604b5b0},{0xc6950e8,0x6d1a4623},{0xc6950f0,0x23114790},{0xc695154,0xb084b5b0},{0xc69519c,0xb32b6a63},{0xc695220,0x4604b5b0},{0xc695224,0xb930af00},{0xc695264,0xe7e547a8},{0xc695268,0x2b00681b},{0xc695454,0x6805b5f8},{0xc695458,0x4628af00},{0xc6954c0,0xf4ba4907},{0xc6954c4,0xbdf8ff4f},{0xc69553c,0x43f0e92d},{0xc6955f8,0x43f0e92d},{0xc6955fc,0x6804b083},{0xc6956a4,0xf7ff7623},{0xc6956a8,0xe7bdff1d},{0xc695770,0xb083b5f0},{0xc695898,0x4904b580},{0xc695c4c,0x47f0e92d},{0xc695c50,0x4688b082},{0xc695d28,0x4a0f8ae3},{0xc695d2c,0x49129300},{0xc69987c,0x47f0e92d},{0xc699880,0x4604b082},{0xc699948,0xbf00e7b2},{0xc69994c,0x2ca6c7cc},{0xc6999f4,0x4605b5b0},{0xc699a20,0xfa34f7fa},{0xc69e45c,0x4b02b580},{0xc69e46c,0x4b02b580},{0xc69e558,0x41f0e92d},{0xc69e55c,0x460e4605},{0xc69e574,0x47984628},{0xc69e578,0xd0f72800},{0xc69e614,0x7d80b580},{0xc69e618,0xf080af00},{0xc69e61c,0xf3c00008},{0xc69e620,0xbd8000c0},{0xc69f91c,0xaf00b580},{0xc69f920,0xf838f00b},{0xc69f92c,0x46034798},{0xc69f930,0xbd804618},{0xc6a55b4,0x41f0e92d},{0xc6a55b8,0xaf004d4b},{0xc6a56dc,0x4620e7df},{0xc6a56e0,0xfaccf4a7},{0xc6aa994,0x4a07b580},{0xc6aa998,0x68124603},{0xc6aa9ac,0x6840d0fb},{0xc6aa9b0,0xbf00e7f6},{0xc6aa9b8,0xaf00b580},{0xc6aa9bc,0xffeaf7ff},{0xc6aa9d4,0xb5b0e7fc},{0xc6aa9d8,0x460caf00},{0xc6aaa00,0xd1f6429a},{0xc6aaa04,0xbdb02000},{0xc6aab08,0xb083b590},{0xc6aab0c,0x4b072400},{0xc6aab24,0xbd9046bd},{0xc6aab28,0xe7fa4620},{0xc6ab14c,0x4909b5b0},{0xc6ab160,0xf4d64805},{0xc6d0b50,0x4d0db5f8},{0xc6d0b60,0xf21968a0},{0xc6d0b68,0xf888f47c},{0xc6d0b70,0x68626013},{0xc6d10d0,0x47f0e92d},{0xc6d10d4,0x460eb082},{0xc6d1150,0xe7ddfd95},{0xc6d1154,0x3010f8ca},{0xc6d1160,0xb083b5f0},{0xc6d1164,0x4616460c},{0xc6d16a0,0x4ff0e92d},{0xc6d16a4,0x460eb085},{0xc6d173c,0xe7d26114},{0xc6d1740,0xe7d0606c},{0xc6d178c,0x47f0e92d},{0xc6d7cb8,0x460eb5f8},{0xc6d7cbc,0x46044615},{0xc6d7d38,0xf7ff4620},{0xc6d7d3c,0x6460ff55},{0xc6d7dac,0x41f0e92d},{0xc6d7db0,0x7803b08a},{0xc6d7eb8,0x68186831},{0xc6d7ebc,0xfefcf7ff},{0xc6d8c7c,0xb097b5f0},{0xc6d8c80,0x4b12461c},{0xc6d8cc0,0xf874f7ff},{0xc6d8cc4,0x46bd375c},{0xc6d9780,0xb59881f0},{0xc6d9784,0xf511af00},{0xc6d9788,0x4604fb25},{0xc6d9790,0xfd0ef477},{0xc6d9794,0x6004b100},{0xc716140,0xb5b02300},{0xc7f3cec,0x1d382100},{0xc7f3cf4,0x777b2303},{0xc7f3d04,0x72bc4b1d},{0xc7f3d14,0x1d394632},{0xc7f3d18,0xf4776800},{0xc8915f8,0x4b08b580},{0xc891610,0x42916881},{0xc89a85c,0x43f0e92d},{0xc89a860,0xb0834d1c},{0xc89a8b4,0x20067e23},{0xc89a8b8,0x68239301},{0xc8aa6b8,0x60858ff8},{0xc8aa6e4,0xe9c46120},{0xc8ba2d0,0x6aec8ff0},{0xc8bbb10,0xb5802200},{0xc8bbb14,0xaf004611},{0xc8bbb18,0xf4f0f68d},{0xc8bbb1c,0xf68db118},{0xc8bbb20,0x6800f4b3},{0xc8bbb24,0xbd804240},{0xc8c0844,0x4603b580},{0xc8c0848,0xb110af00},{0xc8c084c,0x4f00f5b1},{0xc8c0850,0xf687d301},{0xc8c0854,0xb209f7db},{0xc8c0858,0x20008001},{0xc8c085c,0x1e9c3},{0xc8c0860,0xbd807098},{0xc8e858c,0x43f8e92d},{0xc8e8590,0xaf004604},{0xc8e85cc,0x464df357},{0xc8e85d0,0xbf00e7f2},{0xc8ea4e0,0x43f0e92d},{0xc8ea524,0xb11368a3},{0xc8ea528,0x100e9d4},{0xc8ea580,0x41f0e92d},{0xc8ea584,0xaf004680},{0xc8ea5d8,0x4620ff83},{0xc8ea5dc,0xf34ef662},{0xc8ebba8,0x47f0e92d},{0xc8ebc18,0xf818f5aa},{0xc8ebc24,0xfc8af5a9},{0xc9084dc,0x4b09b580},{0xc91ca00,0xf3bf3094},{0xc91ca04,0xf3bf8f4f},{0xc91ca08,0x47708f6f},{0xc92e6d4,0x2801b130},{0xc92e6d8,0x4b03d102},{0xc92e6dc,0x635a2201},{0xc92e6e0,0x47702000},{0xc92e6e8,0x7ffc000},{0xca3b5cc,0xc69e431},{0xca3b5d0,0xc69f913},{0xca3b608,0xc69e615},{0xca3b60c,0xc69f849},{0xcb40eec,0x6e5f6f74},{0xcb40ef0,0x76697461},{0xcb40ef4,0x72630065},{0xcc50310,0x20084dc4},{0xcc50314,0x20084ad0},{0xcc50328,0xc6999f5},{0xcc5032c,0x20084b84},{0x2ca01f58,0x10064},{0x2ca01f5c,0x0},{0x2ca01f60,0x800},{0x2ca2b73c,0x116},{0x2ca2b740,0x119},{0x2ca2b744,0xc463bd5},{0x2ca2b754,0x166},{0x2ca2b758,0x16a},{0x2ca2b75c,0xc463f7b},{0x2cb63dfc,0x65722f00},{0x2cb63e00,0x72756f73},{0x2cb63e04,0x612f6563},{0x2cb63e08,0x632f7070},{0x2cb63e0c,0x72746e6f},{0x2cb63e10,0x635f6c6f},{0x2cb63e14,0x65746e65},{0x2cb63e18,0x63692f72},{0x2cb63e1c,0x732f6e6f},{0x2cb63e20,0x69747465},{0x2cb63e24,0x2e73676e},{0x2cb63e28,0x6e6962},{0x2cc5276c,0xc546d11},{0x2cc52770,0xc549e45},{0x2cc52774,0xc54162d},{0x2cc52778,0xc5419ad},{0x2cc5277c,0xc546d71},{0x2cc52780,0xc546ca1},{0x2cc52784,0xc5468c1},{0x2cc52788,0xc546951},{0x2cc527a4,0xc546db1},{0x2cc527a8,0xc542365}}
+ for _,item in ipairs(fp)do assert(word(item[1])==item[2],"ROM differs")end
+ add("ROM: "..#fp.."/"..#fp)
+ local dc,ic=word(0x07ffc000),word(0x07ffa000)
+ add("Cache D/I: "..((dc&1)==1 and"ON"or"OFF").."/"..((ic&1)==1 and"ON"or"OFF"))
+ assert((dc&1)==1 and(ic&1)==1,"Cache state differs")
+ -- Fresh long string + closed upvalue, no pointer/header modification.
+ saved=keep(string.pack("<I4",0x7ffffffe)..string.rep("\0",124)..CODE..string.rep("\0",32))
+ local up=ptr(debug.upvalueid(saved,1))
+ local function inside(p,n)return type(p)=="number"and p%4==0 and p>lo and p+n<=hi end
+ assert(inside(up,32),"Upvalue range differs")
+ local value=word(up+8);assert(value==up+16,"Upvalue not closed")
+ assert((word(value+8)&0xff)==0x54,"Value type differs")
+ local obj=word(value);local length=#saved()
+ assert(inside(obj,length+17),"String range differs")
+ assert((word(obj+4)&0xff)==0x14 and word(obj+12)==length,"String layout differs")
+ assert(word(obj+16)==0x7ffffffe and word(obj+144)==0xb802f000,"Payload differs")
+ add("String: OK")
+ lines={"Guard / ROM: OK","MPU / heap: OK","String: OK",
+  "READY: tap screen once","Native has not run"}
+ ready=true
+ while not armed do paint();coroutine.yield("Waiting for RUN")end
+ native_once(obj,length)
+end
+local co=coroutine.create(work)
+timer=lvgl.Timer({period=100,cb=function()
+ if not alive then return end
+ local ok,why=coroutine.resume(co)
+ if not ok then add("RESULT: NS1 CORE CHECK");add(tostring(why):sub(1,100)) end
+ paint()
+ if not ok or coroutine.status(co)=="dead"then
+  saved=nil
+  pcall(function()timer:pause()end)
+  pcall(function()timer:delete()end)
+ end
+end})
+root:add_flag(lvgl.FLAG.CLICKABLE)
+root:onevent(lvgl.EVENT.CLICKED,function()
+ if alive and ready and not armed then ready=false;armed=true end
+end)
+root:onevent(lvgl.EVENT.DELETE,function()
+ alive=false;saved=nil
+ if timer then pcall(function()timer:pause()end);pcall(function()timer:delete()end)end
+end)
+paint()

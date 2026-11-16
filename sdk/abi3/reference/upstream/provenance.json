@@ -1,0 +1,66 @@
+[
+  {
+    "path": "framework/socket/bt_gattc.c",
+    "sha256": "d925f67f797f23a3a5820265f707de0631711dbf7749dbb205895bc2df62e97a"
+  },
+  {
+    "path": "framework/socket/bt_gatts.c",
+    "sha256": "a72ce2dffbbf2c84ca6ae7052ecc038114b59a7ff912ee064562a391ede3a982"
+  },
+  {
+    "path": "framework/include/bt_gattc.h",
+    "sha256": "13a159f16fb3488416eea7635bd5d5cd654f2354de712613cf92cc2c22a5cdeb"
+  },
+  {
+    "path": "framework/include/bt_gatts.h",
+    "sha256": "4d4f5a1b71be4a75336e2b6692e77005614c4ca7c8f269c386b9767a4525e993"
+  },
+  {
+    "path": "framework/include/bt_gatt_defs.h",
+    "sha256": "f315f2f35e2f6886df866ab7fee488b0060574ca46fff3cd0603276304cc33b3"
+  },
+  {
+    "path": "service/ipc/socket/include/bt_message_gattc.h",
+    "sha256": "a5c8531685ff41e61089e7c2717f240f0eff10a0a73f376dfc0fd91df615bc4e"
+  },
+  {
+    "path": "service/ipc/socket/include/bt_message_gatts.h",
+    "sha256": "c76b8401b02c6042ac8ab8faf480a8357653efafb2feb1b31031bd7c886e76c8"
+  },
+  {
+    "path": "service/ipc/socket/include/bt_socket.h",
+    "sha256": "2df1daee03ff4493dd62d29adcd837388f2f2ad9c5566c4f1094f84ff42e900e"
+  },
+  {
+    "path": "tools/gatt_client.c",
+    "sha256": "c99e23aa20c83e7466390941354eeb3923a2d92ce83cb894965cbd6a564d6527"
+  },
+  {
+    "path": "tools/gatt_server.c",
+    "sha256": "a50ab8bbb60e3db1ac73cc3e98485cb6b071ac85db1aaf410ab5672026b388d4"
+  },
+  {
+    "path": "service/profiles/gatt/gattc_event.c",
+    "sha256": "740da2ed0ce198b354777f20b253e268a1b3e46e9d36704f769d749606181dfc",
+    "commit": "c423c51e69acad244b1d44f138918cbedbc70d40",
+    "role": "MTU producer semantic reference only; retail first raw event remains unknown"
+  },
+  {
+    "path": "service/ipc/socket/src/bt_socket_gattc.c",
+    "sha256": "86a3e5ee5d32eb9fa6f8ddea5a10f57e49b55bc6fa7f7cfdc5724f64ce434dd8",
+    "commit": "c423c51e69acad244b1d44f138918cbedbc70d40",
+    "role": "MTU producer semantic reference only; retail first raw event remains unknown"
+  },
+  {
+    "path": "service/profiles/gatt/gattc_service.c",
+    "commit": "c423c51e69acad244b1d44f138918cbedbc70d40",
+    "sha256": "ef26f1c2f9a8fa336bb74905dabbe13eccab1234f8230312535429d8a88ea0a5",
+    "role": "Upstream demonstrates mixed MTU/payload naming; retail ROM proof is independent authority"
+  },
+  {
+    "path": "service/stacks/zephyr/sal_gatt_client_interface.c",
+    "commit": "c423c51e69acad244b1d44f138918cbedbc70d40",
+    "sha256": "7c8abfd255d3e70a0203b48230ce84f5a6525f5cc950c859c91796f04ec2a55d",
+    "role": "Upstream demonstrates mixed MTU/payload naming; retail ROM proof is independent authority"
+  }
+]

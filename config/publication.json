@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "project_license": "MIT",
+  "license_decision_complete": true,
+  "third_party_notice": "THIRD_PARTY.md",
+  "source_only": true,
+  "device_binaries_included": false,
+  "historical_device_acceptance_does_not_transfer": true
+}

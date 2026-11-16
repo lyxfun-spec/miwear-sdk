@@ -1,0 +1,7 @@
+{
+  "zig": "local-assets/zig/zig.exe",
+  "python_deps": "work/python-deps",
+  "band_ap": "local-assets/firmware/band11-4.100.179-ap.bin",
+  "s4_ap": "local-assets/firmware/s4-sport-3.111.032-ap.bin",
+  "lua": "local-assets/lua/lua.exe"
+}

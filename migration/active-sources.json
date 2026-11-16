@@ -1,0 +1,583 @@
+{
+  "policy": "Source hashes describe immutable origins; active files may evolve. No binaries, firmware, credentials, or evidence copied.",
+  "files": [
+    {
+      "active": "sdk/abi1/tests/sdk_contract.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tests/sdk_contract.c",
+      "source_sha256": "ad042bc799405c73fd7cf6d114c9f62ba973d74861cb7189ebe3fd752e80c84e"
+    },
+    {
+      "active": "sdk/abi1/include/ns_sdk_flow.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_sdk_flow.h",
+      "source_sha256": "8c9c4239998e3abfdb8ba33ce9816ce964deb6f54ea6d028cb6ee0b29c26948e"
+    },
+    {
+      "active": "sdk/abi1/include/ns_controller.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_controller.h",
+      "source_sha256": "e80b562754a6e43ca8004ce1936594705092ce9f937b42b4ba28d603570b5886"
+    },
+    {
+      "active": "sdk/abi1/include/ns_session.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_session.h",
+      "source_sha256": "533bd69b2ad8dfe93a9c8022685a586a540368fc9453e774bf7e7b239e99a7d0"
+    },
+    {
+      "active": "sdk/abi1/tests/default_page_driver.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tests/default_page_driver.c",
+      "source_sha256": "24c054426b7351f72ae137832666f37eb94612d03b5b59a25905108e83427e9a"
+    },
+    {
+      "active": "sdk/abi1/platform/default_shell_policy.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/default_shell_policy.h",
+      "source_sha256": "6a9d16d954db80f08ac6993841e6abe57539aa891f51e81b61abc1dbd38fe77d"
+    },
+    {
+      "active": "sdk/abi1/include/ns_sdk_page.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_sdk_page.h",
+      "source_sha256": "61494dff739b86a6fa34e0abddf888c0cb91c156cff25ed25711ea8712a98a80"
+    },
+    {
+      "active": "sdk/abi1/include/ns_ble_backend.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_ble_backend.h",
+      "source_sha256": "1c129be883721daebf7fea4830ffdfcf38098d712bc50c4f80269d9e627bcd24"
+    },
+    {
+      "active": "sdk/abi1/include/ns_radio_port.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_radio_port.h",
+      "source_sha256": "ae2a09278a88d6a392c1c1f0324b12cba5edc31d3686374a9a12cb3fe82255f4"
+    },
+    {
+      "active": "sdk/abi1/include/ns_ble_packet.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_ble_packet.h",
+      "source_sha256": "b2e5be60d0895b8e45c13d773af4b568749413061d62eaecfecd4a0aabc6eafb"
+    },
+    {
+      "active": "sdk/abi1/include/ns_port.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_port.h",
+      "source_sha256": "120e96e61001dd6faddee5cfe28acfc5b5dd262ee535fc750105a4759d6c4b99"
+    },
+    {
+      "active": "sdk/abi1/templates/page_component.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/templates/page_component.c",
+      "source_sha256": "1c9667c6c988313aef0d7c3ea5511338588ab5b58fc0e37639e3a2795a1b43f3"
+    },
+    {
+      "active": "sdk/abi1/templates/foundation_component.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/templates/foundation_component.h",
+      "source_sha256": "7e25764ab47e9f719826d687f779d5c07641560568043a24a59817033b9790bf"
+    },
+    {
+      "active": "sdk/abi1/platform/s4_default.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/s4_default.c",
+      "source_sha256": "524ce1ac2d8d8919a19497868a5cf055efbaa8246926bd0c28d92aa7454acff8"
+    },
+    {
+      "active": "sdk/abi1/platform/s4_default_checks.inc",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/s4_default_checks.inc",
+      "source_sha256": "49c1543b0418093353a76630889eca8f5cff9047bb67fdee49822b9b0c14f750"
+    },
+    {
+      "active": "sdk/abi1/platform/band_default.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/band_default.c",
+      "source_sha256": "acd3da86437cfb42dc2dede87e638bfa5fa19b697b3380bbd9b035a6cf60d9c5"
+    },
+    {
+      "active": "sdk/abi1/platform/band_default_launcher.inc",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/band_default_launcher.inc",
+      "source_sha256": "5a3bae37376a4568405cf0a5c3b1fbc4780e8dd6c73874980edfb32495424acb"
+    },
+    {
+      "active": "sdk/abi1/platform/band_default_resident.inc",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/band_default_resident.inc",
+      "source_sha256": "cbb01305df008a71fafe50aec144d0045ff0a5794e471c7e94caee6cdc257559"
+    },
+    {
+      "active": "sdk/abi1/platform/radio_port.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/radio_port.c",
+      "source_sha256": "3a319aa6e8a7d40124a59ae7b18cf3db9b8be8839f50d39392253d7469c79d1c"
+    },
+    {
+      "active": "sdk/abi1/platform/port.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/platform/port.c",
+      "source_sha256": "f297da45f07c112aeaa0f9bde719bc06f0c952d11dc0eeb434af41204b519c9c"
+    },
+    {
+      "active": "sdk/abi1/src/ns_default_shell.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_default_shell.c",
+      "source_sha256": "9c0c98fc21e58b2767e71a1c0780a555e11522c692aa7838a3d7b1ff6e0d0bad"
+    },
+    {
+      "active": "sdk/abi1/src/ns_sdk_page.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_sdk_page.c",
+      "source_sha256": "108ec0f44217efbd6be4c6e2685accdd0ca5e7e5c9e75251feb7fec7d00c156d"
+    },
+    {
+      "active": "sdk/abi1/src/ns_sdk_flow.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_sdk_flow.c",
+      "source_sha256": "adebd794d0d0f183a73df1b26c1b50eba25214915fd77e7e80f217a94b6d362d"
+    },
+    {
+      "active": "sdk/abi1/src/ns_sdk_ble_backend.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_sdk_ble_backend.c",
+      "source_sha256": "d109f6d0dd2d6037d909c753fc5ab988928ce0380719986b13acf1b7d29a820b"
+    },
+    {
+      "active": "sdk/abi1/include/ns_ble_internal.h",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_ble_internal.h",
+      "source_sha256": "604e17fe5d116e6da54770d96426f310fc359ee1e29c1113c2302196f4a7c224"
+    },
+    {
+      "active": "sdk/abi1/src/freestanding.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/freestanding.c",
+      "source_sha256": "dd5778ae3e399fb6256821b781606009f0f9ab8cccf93b1afbbce2f50dfd66e6"
+    },
+    {
+      "active": "sdk/abi1/src/ns_ble_packet.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_ble_packet.c",
+      "source_sha256": "a3e1fa63a393cd4cd487c84b407801fb1869caa89762ad4fad84e5d46dceb78f"
+    },
+    {
+      "active": "sdk/abi1/src/ns_controller.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_controller.c",
+      "source_sha256": "d4b02492d428fdc8b3f063307d7fec501f742eaf234d022e2ec38a2362c64580"
+    },
+    {
+      "active": "sdk/abi1/src/ns_session.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/src/ns_session.c",
+      "source_sha256": "810bdfdfd2d5966744c245afe7101ab7dd7933eaf960215d904201ba677f1ebc"
+    },
+    {
+      "active": "sdk/abi1/device/band_worker_entry.S",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/band_worker_entry.S",
+      "source_sha256": "cc24000af43b1b4b421e381048d55083a71b72f1b7df300ced99a11c651b042d"
+    },
+    {
+      "active": "sdk/abi1/device/band_default_bootstrap.c",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/band_default_bootstrap.c",
+      "source_sha256": "b08ae21f3297f5bbe319af8f6134f594ab0e35a7e96cb72dda3826db3818cf16"
+    },
+    {
+      "active": "sdk/abi1/device/band.ld",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/band.ld",
+      "source_sha256": "348a87f7f6b37b7142de54e7eb710b1dac8a58fbd8a77490d81971e30e9a9fc3"
+    },
+    {
+      "active": "sdk/abi1/device/sdk_runtime.ld",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/sdk_runtime.ld",
+      "source_sha256": "9c1a87334668adb57acd522885b65257c8226ad27f5d5c9cdc8c68a54fd2fa8e"
+    },
+    {
+      "active": "sdk/abi1/device/page_model.ld",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/page_model.ld",
+      "source_sha256": "2da92451e12d8554f1e1b52bd633f8a4294cde973ceadec897c643996b42e7dc"
+    },
+    {
+      "active": "sdk/abi1/device/sdk_component.ld",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/sdk_component.ld",
+      "source_sha256": "e10b7794db79b98ee72ad3f904c9d673aee8c3e92d4b133c27d61854b504ab85"
+    },
+    {
+      "active": "sdk/abi1/device/default_module.ld",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/default_module.ld",
+      "source_sha256": "79ffb513b9201686e6c3c00cb38b0ff7cb74f981590dc302ccf734f169e64a4e"
+    },
+    {
+      "active": "sdk/abi1/device/band_default_rpc.lua.in",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/band_default_rpc.lua.in",
+      "source_sha256": "a280caf9fbc59baaae27d440fc23388b265037f67b5e57518c99f4fc61addabb"
+    },
+    {
+      "active": "sdk/abi1/device/s4_default_main.lua.in",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/device/s4_default_main.lua.in",
+      "source_sha256": "f83dd6eeba02bd5526535eb47f65a7d66467ed03b7272327dd82a8fc8bb44d92"
+    },
+    {
+      "active": "sdk/abi1/tools/build_default.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tools/build_default.py",
+      "source_sha256": "aff710af5ef4342a6eb39750ea290baa47d931ef7f890cf6166d776b4529c1be"
+    },
+    {
+      "active": "sdk/abi1/tools/verify_default.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tools/verify_default.py",
+      "source_sha256": "18f9d71ed3f046f74824e90be57b204f67df9dadaf3744cf3dacb8747aca9076"
+    },
+    {
+      "active": "sdk/abi1/tools/verify_local_relocations.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tools/verify_local_relocations.py",
+      "source_sha256": "f0851eb8d369f6bb0367ac3cf42858c7441e9b3623075e6f590e0d3d218159f6"
+    },
+    {
+      "active": "sdk/abi1/tools/verify_default_lua.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tools/verify_default_lua.py",
+      "source_sha256": "ee1852a92261503cb98c239103857504433f1e1ce8dd5c4276cf58b02382d422"
+    },
+    {
+      "active": "sdk/abi1/tools/verify_sdk_contract.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tools/verify_sdk_contract.py",
+      "source_sha256": "30921bed80ecd000f9b543b796d3c0abc93f61f4d8b1474cb3aed6667f701881",
+      "retired": true
+    },
+    {
+      "active": "sdk/abi1/tests/default_lua_host.lua",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tests/default_lua_host.lua",
+      "source_sha256": "a4c72d82938f34ec28c3280bcd0958a4efc33feb02abd530a4d942b87bf137bb"
+    },
+    {
+      "active": "sdk/abi1/tests/band_default_ui_model.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tests/band_default_ui_model.py",
+      "source_sha256": "5af487fedc382c6320b96a90d349a0155e3f5bfae3e5c3caea79a5c77045ad8d"
+    },
+    {
+      "active": "sdk/abi1/reference/band_loader.lua.in",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/reference/band_loader.lua.in",
+      "source_sha256": "70ef10d904cf49aef733fe737f39286ae421e3aae622da7d860f594d9e85b982"
+    },
+    {
+      "active": "sdk/abi1/reference/LICENSE-Canopus-AGPL-3.0-only.txt",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/reference/LICENSE-Canopus-AGPL-3.0-only.txt",
+      "source_sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
+    },
+    {
+      "active": "sdk/abi1/reference/band11-abi-profile.json",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/reference/band11-abi-profile.json",
+      "source_sha256": "66ca34353d378d7d1eb33d560ca5c143859bb51f3f4819d1c8cc2c810f1cd8d5"
+    },
+    {
+      "active": "sdk/abi1/reference/s4-abi-profile.json",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/reference/s4-abi-profile.json",
+      "source_sha256": "f09710a245ed39560dcd87ddcf9bb47ea653ff3393e809d73ee6f2ec980d9be1"
+    },
+    {
+      "active": "sdk/abi1/docs/来源与许可.md",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/docs/来源与许可.md",
+      "source_sha256": "df5123be287cf26924eb4bc29f50672b6c4adb3a872de6df99d92a896c299750"
+    },
+    {
+      "active": "sdk/abi1/docs/冻结与后续边界.md",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/docs/冻结与后续边界.md",
+      "source_sha256": "19c4f1f39d9a0642c1f65c9aeaabf6bc972946b441d34a3ff15cb86f7b9119cc"
+    },
+    {
+      "active": "sdk/abi3/tests/resource_layout.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tests/resource_layout.c",
+      "source_sha256": "93d042f52ef467b624acf237b0dbc115567edead4f17fc3eb78c46e531aea053"
+    },
+    {
+      "active": "sdk/abi3/include/ns3_resource.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns3_resource.h",
+      "source_sha256": "ca96c8b3485dfeb0690e21ad267dc7657227efbadd8c631f2a8a7b8e825b9b91"
+    },
+    {
+      "active": "sdk/abi3/include/ns_radio_port.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_radio_port.h",
+      "source_sha256": "d684e2971851e45c65764323accf47a90464110c5f2334f10ef770b063c08530"
+    },
+    {
+      "active": "sdk/abi3/include/ns_ble_packet.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_ble_packet.h",
+      "source_sha256": "e0514e9900c5503d56174e8e2cab2d1029f877ec74f8770cf6d18ba967eb8147"
+    },
+    {
+      "active": "sdk/abi3/include/ns_session.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_session.h",
+      "source_sha256": "0e1d7ee4e99508bd657cdc118aff60cfde11afddaa8b941d4b4b88babbcaf65b"
+    },
+    {
+      "active": "sdk/abi3/include/ns_port.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_port.h",
+      "source_sha256": "6e8555c6b106d2101a6c33ad958553d7bb815daf2d3c8aea0c6a627b042541d9"
+    },
+    {
+      "active": "sdk/abi3/tests/layout.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tests/layout.c",
+      "source_sha256": "f65b53bed4abc91188a5b6fb88d0abdb9b2643dcc1ff86bb0c1fa262dce05640"
+    },
+    {
+      "active": "sdk/abi3/include/g2_fixture.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/g2_fixture.h",
+      "source_sha256": "447d7db0aea5907c7cd627284e1a4d1912522f84bd3678abaa8804cd6411b288"
+    },
+    {
+      "active": "sdk/abi3/include/ns_link_v3.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_link_v3.h",
+      "source_sha256": "1132c9110cac5104c2718fe8543ffb068a8e266b83f2177ba7a3a3ec2c62a57c",
+      "retired": true
+    },
+    {
+      "active": "sdk/abi3/include/g1.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/g1.h",
+      "source_sha256": "66addb299ced3493aab5f154b9935c29774cbb5e1dcb244596e41a58c6df6fdf"
+    },
+    {
+      "active": "sdk/abi3/platform/gatt_resource.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/platform/gatt_resource.c",
+      "source_sha256": "730b7cba35c7c6738150da2971f6170c0c5785fedea3a5e96d332f462f72dff5"
+    },
+    {
+      "active": "sdk/abi3/platform/radio_port.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/platform/radio_port.c",
+      "source_sha256": "52a8a9227371b0a95a767d439819887d7b9ae5741532f603f2462d6cecef314c"
+    },
+    {
+      "active": "sdk/abi3/platform/port.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/platform/port.c",
+      "source_sha256": "c4c873967b05b90f17fc4b036e3366e08d54c979fc9b0d65b0122307ba7b6608"
+    },
+    {
+      "active": "sdk/abi3/src/g2_consumer.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/src/g2_consumer.c",
+      "source_sha256": "d808538ddcd8e7f382c7b0e12683f41c65c70a26016a3b462f81157ae0fdbcc5"
+    },
+    {
+      "active": "sdk/abi3/src/freestanding.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/src/freestanding.c",
+      "source_sha256": "788f53102b93d1e10f20f9188755d33c38e55857fb699f4d52c648e12afe3832"
+    },
+    {
+      "active": "sdk/abi3/src/ns_ble_packet.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/src/ns_ble_packet.c",
+      "source_sha256": "9efb3c8435a88e51ee0635a6ba7bd9af522c4affe91dc22ed9bd4938d5ba49f2"
+    },
+    {
+      "active": "sdk/abi3/src/ns3_runtime.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/src/ns3_runtime.c",
+      "source_sha256": "73cbc65550a2436df7be6921b969ffa9998dc10fae463e23d9b605c8bca0cf8a"
+    },
+    {
+      "active": "sdk/abi3/include/ns3_runtime_private.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns3_runtime_private.h",
+      "source_sha256": "9ea3fb7727822bc7b50445118748c70b3249433328aac3144d4468430c1a5041"
+    },
+    {
+      "active": "sdk/abi3/src/g1_runtime.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/src/g1_runtime.c",
+      "source_sha256": "81ec9d9631578f2ef8172b82d06c70f2a1aceaa52e5dcd528954caa744d11c0a"
+    },
+    {
+      "active": "sdk/abi3/device/band_worker_entry.S",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/device/band_worker_entry.S",
+      "source_sha256": "cc24000af43b1b4b421e381048d55083a71b72f1b7df300ced99a11c651b042d"
+    },
+    {
+      "active": "sdk/abi3/device/bootstrap.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/device/bootstrap.c",
+      "source_sha256": "8516dfc1f001a39ee4a2c65be5c74a4e5f156aba7220d530e1966f642021273a"
+    },
+    {
+      "active": "sdk/abi3/device/band.ld",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/device/band.ld",
+      "source_sha256": "348a87f7f6b37b7142de54e7eb710b1dac8a58fbd8a77490d81971e30e9a9fc3"
+    },
+    {
+      "active": "sdk/abi3/device/sdk_runtime.ld",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/device/sdk_runtime.ld",
+      "source_sha256": "9c1a87334668adb57acd522885b65257c8226ad27f5d5c9cdc8c68a54fd2fa8e"
+    },
+    {
+      "active": "sdk/abi3/device/g1_rpc.lua.in",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/device/g1_rpc.lua.in",
+      "source_sha256": "885452787e3d46aed7ea2689d4f5556dd71e15d7c4b557b5b1f01b8fdca61b9d"
+    },
+    {
+      "active": "sdk/abi3/tools/build.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/build.py",
+      "source_sha256": "c7f6b30c532a1a11306a1a049ad0c2da27ca5acb143373e5c21a2f1618de8cd6"
+    },
+    {
+      "active": "sdk/abi3/tools/prove_payload_rom.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/prove_payload_rom.py",
+      "source_sha256": "c481fb0fc3bb908d43edbed7e75a71994d3ac8007a1592009fa3b82b94c7a548"
+    },
+    {
+      "active": "sdk/abi3/tools/prove_attribute_rom.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/prove_attribute_rom.py",
+      "source_sha256": "1aeeaa38b2aaef633124b073b580d0150517a5872bdc6965e643481a860f9674"
+    },
+    {
+      "active": "sdk/abi3/tools/prove_retirement_rom.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/prove_retirement_rom.py",
+      "source_sha256": "43d228ca40b0673472af0e541dee67f3240bfe87b38d6ff1ce49b2fafc633c8f"
+    },
+    {
+      "active": "sdk/abi3/tools/verify_resources.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/verify_resources.py",
+      "source_sha256": "df278c6894a4a5557c89c9004df5ff3e6ce54dd0d25916bbef794091390c66c5"
+    },
+    {
+      "active": "sdk/abi3/tools/verify_sdk.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/verify_sdk.py",
+      "source_sha256": "d6433ae51463e60764fd518da555d1efd935dd84b9f2482ae1e7d4f9f7771971"
+    },
+    {
+      "active": "sdk/abi3/tools/check_public_example.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/check_public_example.py",
+      "source_sha256": "27479aa018a0f9b72e9db2fd9ccb969deed622f1e72480171d884348499f2bc1"
+    },
+    {
+      "active": "sdk/abi3/tools/record_acceptance.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tools/record_acceptance.py",
+      "source_sha256": "fb30e89d3c9bcefa8b18a2262eaac6f270e02df15487570a0197e6c3da10c459"
+    },
+    {
+      "active": "sdk/abi3/tests/rpc.lua",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tests/rpc.lua",
+      "source_sha256": "39453824212a9d7920b133b90c79f0f5b95f76bd47c7bc33be5e84fcacaa27fb"
+    },
+    {
+      "active": "sdk/abi3/tests/test_acceptance.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tests/test_acceptance.py",
+      "source_sha256": "148e0f49d4a11584c770131436fb49e7e52103e3973a8b6d337e9d90b84a297a"
+    },
+    {
+      "active": "sdk/abi3/tests/expected-report.txt",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/tests/expected-report.txt",
+      "source_sha256": "f60593c4bde9e22a1fa5909356b3bfbbbb81f04ef692524b167b765e7e7de8b5"
+    },
+    {
+      "active": "sdk/abi3/reference/band_loader.lua.in",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/band_loader.lua.in",
+      "source_sha256": "86e0fef8641aab67f869984b17d9e4bb9b407997b79ce762c85540262022bbeb"
+    },
+    {
+      "active": "sdk/abi3/reference/band11-abi-profile.json",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/band11-abi-profile.json",
+      "source_sha256": "66ca34353d378d7d1eb33d560ca5c143859bb51f3f4819d1c8cc2c810f1cd8d5"
+    },
+    {
+      "active": "sdk/abi3/reference/g2-model-field-names.json",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/g2-model-field-names.json",
+      "source_sha256": "e3faec6307bc1fcd8f97b986d6f5e2af424942af6348333f6387f1f6814e389a"
+    },
+    {
+      "active": "sdk/abi3/NOTICE.md",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/NOTICE.md",
+      "source_sha256": "5227abe57e8013b456a3161a58fc714c96638b7130baa80ea1fb915780b4166e"
+    },
+    {
+      "active": "sdk/abi3/LICENSE-Canopus-AGPL-3.0-only.txt",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/LICENSE-Canopus-AGPL-3.0-only.txt",
+      "source_sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
+    },
+    {
+      "active": "sdk/abi3/docs/接口合同.md",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/docs/接口合同.md",
+      "source_sha256": "05eee180b1e10f544477612e69076410112eb81a5602c1a1572e3dc5efba6171"
+    },
+    {
+      "active": "sdk/abi3/examples/fixed_channel.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-sdk-0.3.0-foreground-solo/sdk/examples/fixed_channel.c",
+      "source_sha256": "2300b1cbad72b830ea620b6be13ebb6817e51f20efe7f5d5e8f8ca0a6d171fa1"
+    },
+    {
+      "active": "sdk/abi3/public/ns_link_v3.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-sdk-0.3.0-foreground-solo/sdk/include/ns_link_v3.h",
+      "source_sha256": "1132c9110cac5104c2718fe8543ffb068a8e266b83f2177ba7a3a3ec2c62a57c"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/framework/include/bt_gatt_defs.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/framework/include/bt_gatt_defs.h",
+      "source_sha256": "f315f2f35e2f6886df866ab7fee488b0060574ca46fff3cd0603276304cc33b3"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/framework/include/bt_gattc.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/framework/include/bt_gattc.h",
+      "source_sha256": "13a159f16fb3488416eea7635bd5d5cd654f2354de712613cf92cc2c22a5cdeb"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/framework/include/bt_gatts.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/framework/include/bt_gatts.h",
+      "source_sha256": "4d4f5a1b71be4a75336e2b6692e77005614c4ca7c8f269c386b9767a4525e993"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/framework/socket/bt_gattc.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/framework/socket/bt_gattc.c",
+      "source_sha256": "d925f67f797f23a3a5820265f707de0631711dbf7749dbb205895bc2df62e97a"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/framework/socket/bt_gatts.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/framework/socket/bt_gatts.c",
+      "source_sha256": "a72ce2dffbbf2c84ca6ae7052ecc038114b59a7ff912ee064562a391ede3a982"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/provenance.json",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/provenance.json",
+      "source_sha256": "431ca152f469634c09d451815aa8d99abd8db45758ae0b6d69fe503c678aa86c"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/ipc/socket/include/bt_message_gattc.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/ipc/socket/include/bt_message_gattc.h",
+      "source_sha256": "a5c8531685ff41e61089e7c2717f240f0eff10a0a73f376dfc0fd91df615bc4e"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/ipc/socket/include/bt_message_gatts.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/ipc/socket/include/bt_message_gatts.h",
+      "source_sha256": "c76b8401b02c6042ac8ab8faf480a8357653efafb2feb1b31031bd7c886e76c8"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/ipc/socket/include/bt_socket.h",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/ipc/socket/include/bt_socket.h",
+      "source_sha256": "2df1daee03ff4493dd62d29adcd837388f2f2ad9c5566c4f1094f84ff42e900e"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/ipc/socket/src/bt_socket_gattc.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/ipc/socket/src/bt_socket_gattc.c",
+      "source_sha256": "86a3e5ee5d32eb9fa6f8ddea5a10f57e49b55bc6fa7f7cfdc5724f64ce434dd8"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/profiles/gatt/gattc_event.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/profiles/gatt/gattc_event.c",
+      "source_sha256": "740da2ed0ce198b354777f20b253e268a1b3e46e9d36704f769d749606181dfc"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/profiles/gatt/gattc_service.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/profiles/gatt/gattc_service.c",
+      "source_sha256": "ef26f1c2f9a8fa336bb74905dabbe13eccab1234f8230312535429d8a88ea0a5"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/service/stacks/zephyr/sal_gatt_client_interface.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/service/stacks/zephyr/sal_gatt_client_interface.c",
+      "source_sha256": "7c8abfd255d3e70a0203b48230ce84f5a6525f5cc950c859c91796f04ec2a55d"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/tools/gatt_client.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/tools/gatt_client.c",
+      "source_sha256": "c99e23aa20c83e7466390941354eeb3923a2d92ce83cb894965cbd6a564d6527"
+    },
+    {
+      "active": "sdk/abi3/reference/upstream/tools/gatt_server.c",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/reference/upstream/tools/gatt_server.c",
+      "source_sha256": "a50ab8bbb60e3db1ac73cc3e98485cb6b071ac85db1aaf410ab5672026b388d4"
+    },
+    {
+      "active": "sdk/abi3/vendor/facebin.py",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/vendor/facebin.py",
+      "source_sha256": "fd715963ffc4b159e6f597540db470bdf70a5b6009cb1641e453a7e5551184a1"
+    },
+    {
+      "active": "sdk/abi3/vendor/LICENSE-facebin.txt",
+      "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/vendor/LICENSE-facebin.txt",
+      "source_sha256": "ea2d58ae9b5077aa64d3877f67a3b42c588165199a75334515c7e8578681410e"
+    },
+    {
+      "active": "sdk/abi1/tests/loader/check_native_module.py",
+      "source": "imports/2026-11-07/vela-js/work/research/check_native_module.py",
+      "source_sha256": "fe922574c45c03f048f976dd088b477b18275170ff3a7fae889b4b7f6d157bd8"
+    },
+    {
+      "active": "sdk/abi1/tests/loader/emulate_entrypoints.py",
+      "source": "imports/2026-11-07/vela-js/work/research/emulate_entrypoints.py",
+      "source_sha256": "a3977cd90495b83f018db01e5231672f4c3b0603b82a20858728f3e06516bf0c"
+    },
+    {
+      "active": "sdk/abi1/tests/loader/build_minimal_module.py",
+      "source": "imports/2026-11-07/vela-js/work/research/build_minimal_module.py",
+      "source_sha256": "de97a2275e57bf1bcbc7ce43b3754f08192b7411ac6a3d32b7bcb983a8f127f1",
+      "retired": true
+    },
+    {
+      "active": "sdk/abi1/tools/build_library.py",
+      "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/tools/build_sdk.py",
+      "source_sha256": "e812b69487c2bc3b182d9096877ba59386ed08811628f0b13c3750f644ff7028"
+    }
+  ]
+}

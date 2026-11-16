@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "target": {
+    "model": "M2312W1",
+    "marketing_name": "Xiaomi S4 Sport",
+    "firmware": "3.111.032",
+    "other_devices_supported": false
+  },
+  "firmware_sha256": "86a8580db2f603101de017607b509b1968c10122c62c33323684bc13a54b9158",
+  "ap_base": "0x2c300000",
+  "ram_static_start": "0x3c200000",
+  "umem_start": "0x3c478be0",
+  "umem_end_exclusive": "0x3dbe0000",
+  "functions_from_accepted_source": {
+    "CREATE": {
+      "address": "0x2c4f7488",
+      "cast": "void *(*)(void (*)(void*),u32,void*)",
+      "thumb_bit_required": true
+    },
+    "DELETE": {
+      "address": "0x2c4f6f78",
+      "cast": "void (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "APP": {
+      "address": "0x2c796b60",
+      "cast": "void *(*)(u32)",
+      "thumb_bit_required": true
+    },
+    "RECOVERED": {
+      "address": "0x2c79693c",
+      "cast": "void *(*)(u32)",
+      "thumb_bit_required": true
+    },
+    "PAGE": {
+      "address": "0x2c75ee00",
+      "cast": "void *(*)(u32)",
+      "thumb_bit_required": true
+    },
+    "INSTALL": {
+      "address": "0x2c7a23cc",
+      "cast": "i32 (*)(void*,void**,u32)",
+      "thumb_bit_required": true
+    },
+    "UNREGISTER": {
+      "address": "0x2c799180",
+      "cast": "void (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "FREE": {
+      "address": "0x2c358260",
+      "cast": "void (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "OPEN": {
+      "address": "0x2c6a74c4",
+      "cast": "i32 (*)(const char*,i32,...)",
+      "thumb_bit_required": true
+    },
+    "CLOSE": {
+      "address": "0x2c6a6c2c",
+      "cast": "i32 (*)(i32)",
+      "thumb_bit_required": true
+    },
+    "PRINT": {
+      "address": "0x2c34c35c",
+      "cast": "i32 (*)(i32,const char*,...)",
+      "thumb_bit_required": true
+    },
+    "TOP": {
+      "address": "0x2c75f2cc",
+      "cast": "void *(*)(i32)",
+      "thumb_bit_required": true
+    },
+    "GOTO": {
+      "address": "0x2c8794b0",
+      "cast": "void (*)(u32,void*,void*,void*)",
+      "thumb_bit_required": true
+    },
+    "FINISH": {
+      "address": "0x2c75f59c",
+      "cast": "void (*)(u32)",
+      "thumb_bit_required": true
+    },
+    "SHOWN": {
+      "address": "0x2c75c2b0",
+      "cast": "u32 (*)(u32,u32)",
+      "thumb_bit_required": true
+    },
+    "TICK": {
+      "address": "0x2c4f4538",
+      "cast": "u32 (*)(void)",
+      "thumb_bit_required": true
+    },
+    "LABEL": {
+      "address": "0x2c4fe910",
+      "cast": "void *(*)(void*)",
+      "thumb_bit_required": true
+    },
+    "TEXT": {
+      "address": "0x2c506a80",
+      "cast": "void (*)(void*,const char*)",
+      "thumb_bit_required": true
+    },
+    "ALIGN": {
+      "address": "0x2c4dd3c8",
+      "cast": "void (*)(void*,u32,i32,i32)",
+      "thumb_bit_required": true
+    },
+    "VISIBLE": {
+      "address": "0x2c4d9e34",
+      "cast": "u32 (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "ALLOC": {
+      "address": "0x2c35a16c",
+      "cast": "void *(*)(u32)",
+      "thumb_bit_required": true
+    },
+    "BT_CREATE": {
+      "address": "0x2c7cf084",
+      "cast": "void *(*)(void)",
+      "thumb_bit_required": true
+    },
+    "BT_DELETE": {
+      "address": "0x2c7cbe8c",
+      "cast": "void (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "RPC": {
+      "address": "0x2c7d47e6",
+      "cast": "u32 (*)(void*,void*,u32)",
+      "thumb_bit_required": true
+    },
+    "PROCESS_PID": {
+      "address": "0x2c3363c0",
+      "cast": "u32 (*)(void)",
+      "thumb_bit_required": true
+    },
+    "THREAD_SELF": {
+      "address": "0x2c336494",
+      "cast": "u32 (*)(void)",
+      "thumb_bit_required": true
+    },
+    "BT_FIND": {
+      "address": "0x2c886420",
+      "cast": "void *(*)(u32)",
+      "thumb_bit_required": true
+    },
+    "LOOP_POST": {
+      "address": "0x2c7cbd04",
+      "cast": "void (*)(void*,void (*)(void*),void*)",
+      "thumb_bit_required": true
+    },
+    "SEM_INIT": {
+      "address": "0x2c8a9d60",
+      "cast": "i32 (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "SEM_WAIT": {
+      "address": "0x2c485930",
+      "cast": "void (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "SEM_DESTROY": {
+      "address": "0x2c48588c",
+      "cast": "void (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "PAUSE": {
+      "address": "0x2c356348",
+      "cast": "i32 (*)(u32)",
+      "thumb_bit_required": true
+    },
+    "ATTR_INIT": {
+      "address": "0x2c34aacc",
+      "cast": "i32 (*)(void*)",
+      "thumb_bit_required": true
+    },
+    "STACK_SIZE": {
+      "address": "0x2c34aafe",
+      "cast": "i32 (*)(void*,u32)",
+      "thumb_bit_required": true
+    },
+    "THREAD": {
+      "address": "0x2c351b7c",
+      "cast": "i32 (*)(u32*,void*,void *(*)(void*),void*)",
+      "thumb_bit_required": true
+    },
+    "JOIN": {
+      "address": "0x2c336940",
+      "cast": "i32 (*)(u32,void**)",
+      "thumb_bit_required": true
+    },
+    "LAUNCH_ADD": {
+      "address": "0x2c5862ac",
+      "cast": "void (*)(u32)",
+      "thumb_bit_required": true
+    },
+    "LAUNCH_REMOVE": {
+      "address": "0x2c586318",
+      "cast": "void (*)(u32)",
+      "thumb_bit_required": true
+    }
+  },
+  "module_info": {
+    "size": 16,
+    "uninitializer": 0,
+    "arg": 4,
+    "exports": 8,
+    "nexports": 12,
+    "busy_error": -16,
+    "format": "ELF32 ARM ET_REL; e_entry fileoffset24; Thumb symbol; no named undefined imports"
+  },
+  "app": {
+    "size": 64,
+    "name": 8,
+    "icon": 12,
+    "id_u16": 16,
+    "flags_byte": 18,
+    "get_name": 28,
+    "signal": 56,
+    "nonrecoverable_flag_mask": 8
+  },
+  "page": {
+    "size": 116,
+    "name": 16,
+    "uid": 20,
+    "animation_refs": 36,
+    "state_u8": 40,
+    "activity": 44,
+    "root": 48,
+    "signal": 52,
+    "registry_prev": 64,
+    "registry_next": 68,
+    "create": 76,
+    "resume": 80,
+    "pause": 92,
+    "stop": 96,
+    "destroy": 100
+  },
+  "globals": {
+    "package_manager": "0x3c20278c",
+    "page_prototype": "0x3c2027d0",
+    "install_events": "0x3c21c25c",
+    "launcher_info": "0x3c207640",
+    "launcher_order": "0x3c207b40",
+    "page_create_rows": "0x3c3e84a8",
+    "page_create_count": "0x3c3e84f8",
+    "destroy_queue": "0x3c3e892c",
+    "destroy_count": "0x3c3e895c",
+    "hide_queue": "0x3c3e84fc",
+    "hide_count": "0x3c3e895d"
+  },
+  "bt_instance": {
+    "size_min": 176,
+    "registry_entry_size": 100,
+    "entry_pid": 8,
+    "entry_instance": 20,
+    "entry_name_inline": 25,
+    "socket_loop": 48,
+    "external_callback_loop": 52,
+    "callback_frame_queue": 72,
+    "callback_mutex": 80,
+    "semantics": "One local instance per process-group PID; borrow existing, never delete borrowed client"
+  },
+  "ble_packet": {
+    "size": 612,
+    "returned_remote": 4,
+    "token_or_remote": 44,
+    "settings": 48,
+    "adv_data": 76,
+    "adv_len_u16": 332,
+    "scan_response": 334,
+    "scan_response_len_u16": 590
+  },
+  "ble_commands": {
+    "scan_start": "0xd1",
+    "scan_stop": "0xd3",
+    "adv_start": "0x43",
+    "adv_stop": "0x44"
+  },
+  "scan_result": {
+    "len_u8": 10,
+    "data": 11,
+    "probe_max": 31
+  },
+  "tokens": {
+    "scanner_size": 8,
+    "advertiser_size": 12,
+    "scanner_callbacks_size": 16,
+    "advertiser_callbacks_size": 12
+  },
+  "thread": {
+    "attr_size": 12,
+    "default_attr_hex": "640001000000000000080000",
+    "worker_stack_bytes": 8192,
+    "callback_thread_identity_required_for_external_ui_release": true
+  },
+  "last_hardware_evidence": "P17 v2 BLE PASS, borrowed0/0 and barrier1/1; exact PID/external-loop branch not transcribed",
+  "source_sha256": "2eebc5837f63324a9d2698d5e334f61c631b0749813d7ec03ecdeb23c1daabb4",
+  "limits": "Not a generic SDK. Use lifecycle/ownership documentation and source, not addresses alone."
+}

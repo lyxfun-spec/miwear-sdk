@@ -1,0 +1,49 @@
+local CODE=("@NATIVE_HEX@"):gsub("..",function(h)return string.char(tonumber(h,16))end)
+local function native_once(object,length)
+ local mailbox,code=object+16,object+144
+ assert(length>=128+#CODE+32 and #CODE==@NATIVE_SIZE@,"Code size differs")
+ local path="/tmp/b11_ns6_exec.txt"
+ local function put(address,value)
+  assert(address==code+4 or address==mailbox+4,"Unexpected parameter write")
+  local ok,r=pcall(execute,string.format("mw %08x=%08x > %s",address,value,path))
+  assert(ok and(r==true or r==0),"Parameter write failed")
+ end
+ put(code+4,mailbox);assert(word(code+4)==mailbox,"Parameter readback failed")
+ local executable=code-0x20000000
+ assert(executable>=0x1c000000 and executable+#CODE<=0x1d000000,"Code alias differs")
+ local function invoke(address,zero)
+  local f=assert(original_open(path,"wb"));assert(f:write("PENDING"));assert(f:close())
+  local ok,r=pcall(execute,string.format("exec 0x%08x > %s",address|1,path))
+  f=assert(original_open(path,"rb"));local text=f:read(512)or"";f:close()
+  local h=text:match("Calling%s+0[xX](%x+)")or text:match("Calling%s+(%x+)")
+  assert(ok and h and(tonumber(h,16)&~1)==(address&~1),"Call not confirmed")
+  if zero then assert(r==true or r==0,"Native return failed")end
+ end
+ local function report()
+  local v={};for i=0,31 do v[i+1]=word(mailbox+i*4)end
+  assert(v[1]==0x4e533642,"Native report missing");return v
+ end
+ progress("Attach independent page manager")
+ invoke(0x0c92e6da,true);invoke(0x0c91ca02,false);invoke(0x0c0c181e,true);invoke(0x0c91ca02,false)
+ invoke(executable,false)
+ local v=report()
+ for i=1,60 do
+  if v[29]~=0 then break end
+  local r={};for j=1,20 do r[j]=v[j+4]end
+  if r[1]==0x4e533652 and(r[13]~=0 or r[14]~=0 or r[17]==1 or(r[16]==7 and r[3]==0))then break end
+  progress("Read page manager "..i);invoke(executable,false);v=report()
+ end
+ local r={};for j=1,20 do r[j]=v[j+4]end
+ local function pair(x)return(x&0xffff).."/"..(x>>16)end
+ local function balanced(x)return(x&0xffff)>=3 and(x&0xffff)==(x>>16)end
+ local pass=r[1]==0x4e533652 and r[17]==1 and r[18]==0x4e533650 and r[13]==0 and r[14]==0 and r[15]==1 and r[16]==7 and r[19]==6 and r[20]==1 and v[29]==0 and v[25]==1
+ for i=3,8 do pass=pass and balanced(r[i])end
+ -- Deferred is diagnostic; zero is valid for the default policy.
+ if r[1]==0x4e533652 and r[16]==7 and r[3]==0 and r[13]==0 and r[14]==0 and v[29]==0 then
+  lines={"NS6 ENTRY READY","Switch to ordinary face","Open apps: B11 NS6","Wait READY -> BACK","No forced reopen delay","3 READY / BACK cycles","Return here; tap once","Manager held to reboot"}
+  verdict:set{text="ENTRY READY"}
+ else
+  lines={"NS6 PAGE "..(pass and"PASS"or"CHECK / WAIT"),"UI create/destroy: "..pair(r[3]),"Resume/pause: "..pair(r[4]),"Sessions/free: "..pair(r[5]),"Scan start/stop: "..pair(r[6]),"Adv start/stop: "..pair(r[7]),"Barrier/join: "..pair(r[8]),"Deferred reopen: "..r[11],"Errors: "..r[13].."/"..r[14].."/"..v[29],"Entry retained: "..(r[16]==7 and"YES"or"NO"),"Runtime held: "..(v[25]==1 and"YES"or"NO")}
+  verdict:set{text=pass and"NS6 PAGE PASS"or"CHECK / WAIT"}
+ end
+end
