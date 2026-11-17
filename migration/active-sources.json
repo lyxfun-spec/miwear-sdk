@@ -32,29 +32,34 @@
       "source_sha256": "6a9d16d954db80f08ac6993841e6abe57539aa891f51e81b61abc1dbd38fe77d"
     },
     {
-      "active": "sdk/abi1/include/ns_sdk_page.h",
+      "active": "sdk/abi1/private/ns_sdk_page.h",
       "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_sdk_page.h",
-      "source_sha256": "61494dff739b86a6fa34e0abddf888c0cb91c156cff25ed25711ea8712a98a80"
+      "source_sha256": "61494dff739b86a6fa34e0abddf888c0cb91c156cff25ed25711ea8712a98a80",
+      "previous_active": "sdk/abi1/include/ns_sdk_page.h"
     },
     {
-      "active": "sdk/abi1/include/ns_ble_backend.h",
+      "active": "sdk/abi1/private/ns_ble_backend.h",
       "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_ble_backend.h",
-      "source_sha256": "1c129be883721daebf7fea4830ffdfcf38098d712bc50c4f80269d9e627bcd24"
+      "source_sha256": "1c129be883721daebf7fea4830ffdfcf38098d712bc50c4f80269d9e627bcd24",
+      "previous_active": "sdk/abi1/include/ns_ble_backend.h"
     },
     {
-      "active": "sdk/abi1/include/ns_radio_port.h",
+      "active": "sdk/abi1/private/ns_radio_port.h",
       "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_radio_port.h",
-      "source_sha256": "ae2a09278a88d6a392c1c1f0324b12cba5edc31d3686374a9a12cb3fe82255f4"
+      "source_sha256": "ae2a09278a88d6a392c1c1f0324b12cba5edc31d3686374a9a12cb3fe82255f4",
+      "previous_active": "sdk/abi1/include/ns_radio_port.h"
     },
     {
-      "active": "sdk/abi1/include/ns_ble_packet.h",
+      "active": "sdk/abi1/private/ns_ble_packet.h",
       "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_ble_packet.h",
-      "source_sha256": "b2e5be60d0895b8e45c13d773af4b568749413061d62eaecfecd4a0aabc6eafb"
+      "source_sha256": "b2e5be60d0895b8e45c13d773af4b568749413061d62eaecfecd4a0aabc6eafb",
+      "previous_active": "sdk/abi1/include/ns_ble_packet.h"
     },
     {
-      "active": "sdk/abi1/include/ns_port.h",
+      "active": "sdk/abi1/private/ns_port.h",
       "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_port.h",
-      "source_sha256": "120e96e61001dd6faddee5cfe28acfc5b5dd262ee535fc750105a4759d6c4b99"
+      "source_sha256": "120e96e61001dd6faddee5cfe28acfc5b5dd262ee535fc750105a4759d6c4b99",
+      "previous_active": "sdk/abi1/include/ns_port.h"
     },
     {
       "active": "sdk/abi1/templates/page_component.c",
@@ -122,9 +127,10 @@
       "source_sha256": "d109f6d0dd2d6037d909c753fc5ab988928ce0380719986b13acf1b7d29a820b"
     },
     {
-      "active": "sdk/abi1/include/ns_ble_internal.h",
+      "active": "sdk/abi1/private/ns_ble_internal.h",
       "source": "imports/2026-11-12/11-nfc-s4-sport-d-codex/outputs/native-session-engineering/include/ns_ble_internal.h",
-      "source_sha256": "604e17fe5d116e6da54770d96426f310fc359ee1e29c1113c2302196f4a7c224"
+      "source_sha256": "604e17fe5d116e6da54770d96426f310fc359ee1e29c1113c2302196f4a7c224",
+      "previous_active": "sdk/abi1/include/ns_ble_internal.h"
     },
     {
       "active": "sdk/abi1/src/freestanding.c",
@@ -263,29 +269,34 @@
       "source_sha256": "93d042f52ef467b624acf237b0dbc115567edead4f17fc3eb78c46e531aea053"
     },
     {
-      "active": "sdk/abi3/include/ns3_resource.h",
+      "active": "sdk/abi3/private/ns3_resource.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns3_resource.h",
-      "source_sha256": "ca96c8b3485dfeb0690e21ad267dc7657227efbadd8c631f2a8a7b8e825b9b91"
+      "source_sha256": "ca96c8b3485dfeb0690e21ad267dc7657227efbadd8c631f2a8a7b8e825b9b91",
+      "previous_active": "sdk/abi3/include/ns3_resource.h"
     },
     {
-      "active": "sdk/abi3/include/ns_radio_port.h",
+      "active": "sdk/abi3/private/ns_radio_port.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_radio_port.h",
-      "source_sha256": "d684e2971851e45c65764323accf47a90464110c5f2334f10ef770b063c08530"
+      "source_sha256": "d684e2971851e45c65764323accf47a90464110c5f2334f10ef770b063c08530",
+      "previous_active": "sdk/abi3/include/ns_radio_port.h"
     },
     {
-      "active": "sdk/abi3/include/ns_ble_packet.h",
+      "active": "sdk/abi3/private/ns_ble_packet.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_ble_packet.h",
-      "source_sha256": "e0514e9900c5503d56174e8e2cab2d1029f877ec74f8770cf6d18ba967eb8147"
+      "source_sha256": "e0514e9900c5503d56174e8e2cab2d1029f877ec74f8770cf6d18ba967eb8147",
+      "previous_active": "sdk/abi3/include/ns_ble_packet.h"
     },
     {
-      "active": "sdk/abi3/include/ns_session.h",
+      "active": "sdk/abi3/private/ns_session.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_session.h",
-      "source_sha256": "0e1d7ee4e99508bd657cdc118aff60cfde11afddaa8b941d4b4b88babbcaf65b"
+      "source_sha256": "0e1d7ee4e99508bd657cdc118aff60cfde11afddaa8b941d4b4b88babbcaf65b",
+      "previous_active": "sdk/abi3/include/ns_session.h"
     },
     {
-      "active": "sdk/abi3/include/ns_port.h",
+      "active": "sdk/abi3/private/ns_port.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns_port.h",
-      "source_sha256": "6e8555c6b106d2101a6c33ad958553d7bb815daf2d3c8aea0c6a627b042541d9"
+      "source_sha256": "6e8555c6b106d2101a6c33ad958553d7bb815daf2d3c8aea0c6a627b042541d9",
+      "previous_active": "sdk/abi3/include/ns_port.h"
     },
     {
       "active": "sdk/abi3/tests/layout.c",
@@ -293,9 +304,10 @@
       "source_sha256": "f65b53bed4abc91188a5b6fb88d0abdb9b2643dcc1ff86bb0c1fa262dce05640"
     },
     {
-      "active": "sdk/abi3/include/g2_fixture.h",
+      "active": "sdk/abi3/private/g2_fixture.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/g2_fixture.h",
-      "source_sha256": "447d7db0aea5907c7cd627284e1a4d1912522f84bd3678abaa8804cd6411b288"
+      "source_sha256": "447d7db0aea5907c7cd627284e1a4d1912522f84bd3678abaa8804cd6411b288",
+      "previous_active": "sdk/abi3/include/g2_fixture.h"
     },
     {
       "active": "sdk/abi3/include/ns_link_v3.h",
@@ -304,9 +316,10 @@
       "retired": true
     },
     {
-      "active": "sdk/abi3/include/g1.h",
+      "active": "sdk/abi3/private/g1.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/g1.h",
-      "source_sha256": "66addb299ced3493aab5f154b9935c29774cbb5e1dcb244596e41a58c6df6fdf"
+      "source_sha256": "66addb299ced3493aab5f154b9935c29774cbb5e1dcb244596e41a58c6df6fdf",
+      "previous_active": "sdk/abi3/include/g1.h"
     },
     {
       "active": "sdk/abi3/platform/gatt_resource.c",
@@ -344,9 +357,10 @@
       "source_sha256": "73cbc65550a2436df7be6921b969ffa9998dc10fae463e23d9b605c8bca0cf8a"
     },
     {
-      "active": "sdk/abi3/include/ns3_runtime_private.h",
+      "active": "sdk/abi3/private/ns3_runtime_private.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-g4r2/include/ns3_runtime_private.h",
-      "source_sha256": "9ea3fb7727822bc7b50445118748c70b3249433328aac3144d4468430c1a5041"
+      "source_sha256": "9ea3fb7727822bc7b50445118748c70b3249433328aac3144d4468430c1a5041",
+      "previous_active": "sdk/abi3/include/ns3_runtime_private.h"
     },
     {
       "active": "sdk/abi3/src/g1_runtime.c",
@@ -469,9 +483,10 @@
       "source_sha256": "2300b1cbad72b830ea620b6be13ebb6817e51f20efe7f5d5e8f8ca0a6d171fa1"
     },
     {
-      "active": "sdk/abi3/public/ns_link_v3.h",
+      "active": "sdk/abi3/include/ns_link_v3.h",
       "source": "imports/2026-11-14/sdk-sdk-ble-gatt-11-nfc/outputs/native-ble-gatt-sdk-0.3.0-foreground-solo/sdk/include/ns_link_v3.h",
-      "source_sha256": "1132c9110cac5104c2718fe8543ffb068a8e266b83f2177ba7a3a3ec2c62a57c"
+      "source_sha256": "1132c9110cac5104c2718fe8543ffb068a8e266b83f2177ba7a3a3ec2c62a57c",
+      "previous_active": "sdk/abi3/public/ns_link_v3.h"
     },
     {
       "active": "sdk/abi3/reference/upstream/framework/include/bt_gatt_defs.h",

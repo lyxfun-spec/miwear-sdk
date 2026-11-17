@@ -71,7 +71,7 @@ def main():
   (out/name).write_text(table+loop)
 
   guards[name]=pairs
- flags=['-target','thumb-freestanding-eabi','-mcpu=cortex_m33','-mfloat-abi=soft','-Oz','-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-unwind-tables','-fno-asynchronous-unwind-tables','-Wall','-Wextra','-Werror','-fPIC','-fvisibility=hidden','-ffunction-sections','-fdata-sections','-DNS_TARGET_BAND=1','-I',R/'public','-I',R/'include','-I',out]
+ flags=['-target','thumb-freestanding-eabi','-mcpu=cortex_m33','-mfloat-abi=soft','-Oz','-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-unwind-tables','-fno-asynchronous-unwind-tables','-Wall','-Wextra','-Werror','-fPIC','-fvisibility=hidden','-ffunction-sections','-fdata-sections','-DNS_TARGET_BAND=1','-I',R/'include','-I',R/'private','-I',out]
  sources=['src/g1_runtime.c','src/ns3_runtime.c','src/ns_ble_packet.c','src/freestanding.c','platform/port.c','platform/radio_port.c','platform/gatt_resource.c']
  objects=[]
  for src in sources:
@@ -81,7 +81,7 @@ def main():
  if library.exists():library.unlink()
  run([zig,'ar','rcs',library,*objects])
  public=R/'sdk-export/include';public.mkdir(parents=True,exist_ok=True)
- (public/'ns_link_v3.h').write_bytes((R/'public/ns_link_v3.h').read_bytes())
+ (public/'ns_link_v3.h').write_bytes((R/'include/ns_link_v3.h').read_bytes())
  consumer=out/'g2_consumer.o';run([zig,'cc',*flags,'-c',R/'src/g2_consumer.c','-o',consumer])
  elf=out/'g1.elf';run([zig,'ld.lld','-T',R/'device/sdk_runtime.ld',consumer,library,'-o',elf])
  image,symbols=inspect(elf);image+=b'\x00\xbf'*((-len(image)%4)//2);assert len(image)<=30720 and symbols['owned_callback']==1
@@ -122,7 +122,7 @@ copy_runtime_image:
  reslayout=out/'resource_layout.o';run([zig,'cc',*flags,'-c',R/'tests/resource_layout.c','-o',reslayout])
  model=out/'model.elf';run([zig,'ld.lld','-T',R/'device/sdk_runtime.ld',consumer,library,layout,reslayout,'-o',model])
  model_raw,model_syms=inspect(model);(out/'model.bin').write_bytes(model_raw);(out/'model-symbols.json').write_text(json.dumps(model_syms,indent=2))
- record=dict(stage='G4R2 ABI3 cancellation fix; hardware pending',hardware_tested=False,ap_sha256=sha(ap),compiler='Zig 0.13.0',runtime_bytes=len(image),bootstrap_bytes=len(boot),sdk_library_sha256=sha(library.read_bytes()),consumer_links_static_archive=True,runtime_sha256=sha(image),bootstrap_sha256=sha(boot),guards=guards,windows={n:dict(start=lo,end_exclusive=hi,sha256=sha(ap[lo-0xc0c0000:hi-0xc0c0000])) for n,(lo,hi) in windows.items()},sources={str(p.relative_to(R)).replace('\\','/'):sha(p.read_bytes()) for folder in ['public','include','src','platform','device','tools','peer','reference','vendor','tests'] for p in (R/folder).glob('*') if p.is_file()})
+ record=dict(stage='G4R2 ABI3 cancellation fix; hardware pending',hardware_tested=False,ap_sha256=sha(ap),compiler='Zig 0.13.0',runtime_bytes=len(image),bootstrap_bytes=len(boot),sdk_library_sha256=sha(library.read_bytes()),consumer_links_static_archive=True,runtime_sha256=sha(image),bootstrap_sha256=sha(boot),guards=guards,windows={n:dict(start=lo,end_exclusive=hi,sha256=sha(ap[lo-0xc0c0000:hi-0xc0c0000])) for n,(lo,hi) in windows.items()},sources={str(p.relative_to(R)).replace('\\','/'):sha(p.read_bytes()) for folder in ['include','private','src','platform','device','tools','peer','reference','vendor','tests'] for p in (R/folder).glob('*') if p.is_file()})
  (out/'build.json').write_text(json.dumps(record,indent=2)+'\n')
  print(json.dumps({k:v for k,v in record.items() if k not in ['guards','sources','windows']},indent=2))
 if __name__=='__main__':main()

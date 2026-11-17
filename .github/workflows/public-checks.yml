@@ -15,6 +15,6 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
-      - run: python -m pip install --target work/python-deps -r requirements-build.txt
-      - run: python -m pip install --target work/toolchain ziglang==0.13.0
-      - run: python tools/check_public.py --toolchain work/toolchain/ziglang --python-deps work/python-deps
+      - run: python -m pip install --target work/deps/python -r requirements-build.txt
+      - run: python -m pip install --target work/deps/toolchain ziglang==0.13.0
+      - run: python tools/check_public.py --toolchain work/deps/toolchain/ziglang --python-deps work/deps/python

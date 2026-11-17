@@ -138,7 +138,7 @@ def main():
         if not (path.is_dir() if key in {'research', 'python_deps'} else path.is_file()):
             raise FileNotFoundError(f'{key}: {path}')
     dependency_versions = verify_python_dependencies(inputs['python_deps']) if args.mode == 'public' else None
-    baseline_path = ROOT / ('config/baselines.json' if args.mode == 'historical' else 'config/public-baselines.json')
+    baseline_path = ROOT / ('local-private/config/baselines.json' if args.mode == 'historical' else 'config/public-baselines.json')
     baselines = json.loads(baseline_path.read_text(encoding='utf-8'))
     for key in ['band_ap', 's4_ap']:
         if sha(inputs[key]) != baselines['firmware'][key]:
@@ -150,8 +150,8 @@ def main():
     for item in baselines['artifacts'] if args.mode == 'historical' else []:
         if sha(ROOT / item['source']) != item['sha256']:
             raise ValueError('Frozen baseline mismatch: ' + item['source'])
-    work = ROOT / 'work'
-    work.mkdir(exist_ok=True)
+    work = ROOT / 'work/builds'
+    work.mkdir(parents=True, exist_ok=True)
     run = Path(tempfile.mkdtemp(prefix='integration-', dir=work))
     report = {'schema': 2, 'mode': args.mode, 'complete': False, 'hardware_tested': False,
               'frozen_origins_verified': args.mode == 'historical',
@@ -274,7 +274,7 @@ def main():
                {**report['active_sources'], **report['orchestration']}.items()):
             raise RuntimeError('Sources changed during validation; rerun before exporting a candidate')
         # Local SDK candidates only. No device bundle, firmware or toolchain distributed.
-        destination = ROOT / 'outputs' / run.name
+        destination = ROOT / 'outputs/candidates' / run.name
         destination.mkdir(parents=True)
         (destination / 'README.md').write_text(
             '# MiWear local SDK candidate\n\nOffline validation only; hardware_tested=false. '
@@ -291,14 +291,14 @@ def main():
                 library_sha256=sha(source), mixed_abi_link_supported=False))
             shutil.copyfile(source, target / 'lib' / source.name)
             if label.startswith('abi1'):
-                shutil.copytree(a1 / 'include', target / 'platform-adapter-include')
+                shutil.copytree(a1 / 'private', target / 'platform-adapter-include')
                 for public in ['ns_session.h', 'ns_controller.h', 'ns_sdk_flow.h']:
                     (target / 'include').mkdir(exist_ok=True)
                     shutil.copyfile(a1 / 'include' / public, target / 'include' / public)
                 shutil.copytree(a1 / 'templates', target / 'platform-component')
                 shutil.copytree(a1 / 'examples', target / 'examples')
             else:
-                shutil.copytree(a3 / 'public', target / 'include')
+                shutil.copytree(a3 / 'include', target / 'include')
                 shutil.copytree(a3 / 'examples', target / 'examples')
         for relative in report['active_sources']:
             target = destination / 'source' / relative

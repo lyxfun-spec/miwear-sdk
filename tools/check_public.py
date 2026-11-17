@@ -12,6 +12,7 @@ import sys
 import tempfile
 
 from prepare_public import inspect_files, selected_files
+from sync_public import check as check_git_selection
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -27,6 +28,12 @@ def main():
         raise RuntimeError('Assertions must remain enabled')
     names = selected_files(ROOT)
     inspect_files(ROOT, names)
+    check_git_selection(ROOT)
+    for abi, expected in [('abi1', {'ns_session.h', 'ns_controller.h', 'ns_sdk_flow.h'}),
+                          ('abi3', {'ns_link_v3.h'})]:
+        actual = {p.name for p in (ROOT / 'sdk' / abi / 'include').iterdir() if p.is_file()}
+        if actual != expected:
+            raise ValueError(f'{abi} public header set changed; review the API contract: {sorted(actual)}')
     sdk_files = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'sdk').rglob('*')
                  if p.is_file() and '__pycache__' not in p.parts}
     if sdk_files - set(names):
@@ -42,8 +49,8 @@ def main():
             ast.parse(path.read_text(encoding='utf-8-sig'), filename=name)
         elif path.suffix == '.json':
             json.loads(path.read_text(encoding='utf-8-sig'))
-    work = ROOT / 'work'
-    work.mkdir(exist_ok=True)
+    work = ROOT / 'work/checks'
+    work.mkdir(parents=True, exist_ok=True)
     run = Path(tempfile.mkdtemp(prefix='public-check-', dir=work))
     report = dict(complete=False, hardware_tested=False, firmware_used=False,
                   public_files=len(names), arm_model='not_run', stages=[])

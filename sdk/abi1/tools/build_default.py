@@ -41,7 +41,7 @@ def main():
  'band11':[0xc46a18c,0xc465cd4,0xc4642f4,0xc464154,0xc8bbb10,0xc3f513c,0xc3f5104,0xc467848,0xc463f7a,0xc463bd4,0xc46b514,0xc46b602,0xc46ce54],
  's4':[0x2c7d47e6,0x2c7cbd04,0x2c7c9436,0x2c7c93d4,0x2c8a9d60,0x2c485930,0x2c48588c,0x2c7d6a70,0x2c886420,0x2c886460,0x2c483a20,0x2c483a3c]}
  core_addresses['s4'] += [0x2c796b60,0x2c79693c,0x2c75ee00,0x2c7a23cc,0x2c75c2b0,0x2c4fe910,0x2c506a80,0x2c4dd3c8,0x2c4d9e34,0x2c5862ac]
- flags=['-target','thumb-freestanding-eabi','-mfloat-abi=soft','-Oz','-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-unwind-tables','-fno-asynchronous-unwind-tables','-Wall','-Wextra','-Werror','-I',R/'include','-I',out,'-I',R/'platform']
+ flags=['-target','thumb-freestanding-eabi','-mfloat-abi=soft','-Oz','-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-unwind-tables','-fno-asynchronous-unwind-tables','-Wall','-Wextra','-Werror','-I',R/'include','-I',R/'private','-I',out,'-I',R/'platform']
  sources=['src/ns_default_shell.c']
  records={}
  for target,cpu in [('band11','cortex_m33'),('s4','cortex_m4')]:
@@ -115,7 +115,7 @@ copy_runtime_image:
   (out/(target+'_bridge_symbols.json')).write_text(json.dumps(model_symbols,indent=2))
   records[target]['candidate_sdk_library_sha256']=sha(library.read_bytes())
   records[target]['ap_sha256']=expected;records[target]['rom_guards']=guards
- record={'stage':'NS6 default policy','hardware_tested':False,'targets':records,'sources':{p.relative_to(R).as_posix():sha(p.read_bytes()) for folder in ['src','include','platform','device','tools','templates','tests'] for p in (R/folder).glob('*') if p.is_file()}}
+ record={'stage':'NS6 default policy','hardware_tested':False,'targets':records,'sources':{p.relative_to(R).as_posix():sha(p.read_bytes()) for folder in ['src','include','private','platform','device','tools','templates','tests'] for p in (R/folder).glob('*') if p.is_file()}}
  (out/'build.json').write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8')
  print(json.dumps({t:{k:v for k,v in d.items() if k not in {'symbols','rom_guards','resolved_local_rel32'}} for t,d in records.items()},indent=2))
 if __name__=='__main__':main()

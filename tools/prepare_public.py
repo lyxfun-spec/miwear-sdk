@@ -57,8 +57,8 @@ def export(root, release=False):
     publication = json.loads((root / 'config/publication.json').read_text(encoding='utf-8'))
     if release and not publication['license_decision_complete']:
         raise ValueError('License choice is pending; use a local review candidate until it is resolved')
-    outputs = root / 'outputs'
-    outputs.mkdir(exist_ok=True)
+    outputs = root / 'outputs/source'
+    outputs.mkdir(parents=True, exist_ok=True)
     destination = Path(tempfile.mkdtemp(prefix='public-source-', dir=outputs))
     for name in names:
         target = destination / name

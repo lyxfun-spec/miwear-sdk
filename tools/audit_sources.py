@@ -37,7 +37,7 @@ def audit(manifest_only=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT / 'work/source-audit.json')
+    parser.add_argument('--output', type=Path, default=ROOT / 'work/checks/source-audit.json')
     parser.add_argument('--manifest-only', action='store_true',
                         help='Classify against recorded hashes without claiming to verify private frozen origins')
     args = parser.parse_args()

@@ -4,7 +4,7 @@
 
 修改活跃 sdk/ 源码、公共工具和文档；保持 ABI1/ABI3 隔离以及公共 API 与私有固件适配的边界。不要沿用其他固件的地址、结构或加载方式推定兼容。
 
-提交前运行 python tools/check_public.py；涉及生命周期时运行带 Zig 的 ARM 模型，涉及后端/宿主时配置精确 AP 执行完整公开构建。说明实际运行的检查、未运行项和限制。新增公开文件需加入 config/public-files.json；维护者还需同步 Git 白名单。当前逐文件来源见 migration/active-sources.json，新增提取需登记来源与哈希。
+先读 AGENTS.md 和 docs/maintenance/维护流程.md。提交前运行 python tools/check_public.py；涉及生命周期时运行带 Zig 的 ARM 模型，涉及后端/宿主时配置精确 AP 执行完整公开构建。说明实际运行的检查、未运行项和限制。新增公开文件需审核后加入 config/public-files.json，再运行 python tools/sync_public.py 生成 Git 白名单。当前逐文件来源见 migration/active-sources.json，新增提取需登记来源与哈希。
 
 禁止提交固件、工具链、缓存、设备包、本机账号/授权/session、私钥或未经脱敏的原始日志。Git 和公开导出采用显式白名单。安装只由设备持有人手动完成；PR 不应包含自动安装、刷机、重启或回收未知系统对象的动作。
 

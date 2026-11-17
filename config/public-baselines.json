@@ -47,7 +47,7 @@
     {
       "name": "ABI3 public header",
       "sha256": "1132c9110cac5104c2718fe8543ffb068a8e266b83f2177ba7a3a3ec2c62a57c",
-      "candidate": "sdk/abi3/public/ns_link_v3.h"
+      "candidate": "sdk/abi3/include/ns_link_v3.h"
     },
     {
       "name": "ABI1 header ns_session.h",

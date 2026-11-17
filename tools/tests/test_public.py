@@ -9,13 +9,32 @@ TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 from prepare_public import inspect_files, export
 import audit_sources
+import sync_public
 
 
 class Publication(unittest.TestCase):
+    def test_git_selection_is_derived_from_reviewed_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'config').mkdir()
+            manifest = root / 'config/public-files.json'
+            manifest.write_text(json.dumps({'files': ['sdk/a.c']}))
+            (root / '.gitignore').write_text(sync_public.expected_gitignore(root))
+            sync_public.check(root)
+            self.assertIn('!/sdk/a.c\n', (root / '.gitignore').read_text())
+            manifest.write_text(json.dumps({'files': ['sdk/a.c', 'sdk/b.c']}))
+            with self.assertRaises(ValueError):
+                sync_public.check(root)
+            manifest.write_text(json.dumps({'files': ['sdk/*.c']}))
+            with self.assertRaises(ValueError):
+                sync_public.expected_gitignore(root)
+
     def test_forbidden_and_secret_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            for name in ['../outside.py', '/absolute.py', 'imports/code.c', 'work/log.txt', 'sdk/image.bin', 'C:/local.py']:
+            for name in ['../outside.py', '/absolute.py', 'imports/code.c', 'work/log.txt',
+                         'local-private/project/state.json', 'local-assets/firmware.c',
+                         'outputs/source/result.c', 'sdk/image.bin', 'C:/local.py']:
                 with self.subTest(name=name), self.assertRaises(ValueError):
                     inspect_files(root, [name])
             path = root / 'source.py'
