@@ -32,7 +32,9 @@ static void bscan_result(void *token,unsigned char *report) {
   if(ns_ble_layout(nsr_target(),&l)==NS_OK && nsp_valid((void*)(base&~3u),l.result_data+shift)) {
    ns_u32 len=report[10];
    if(len<=31u && nsp_valid((void*)(base&~3u),l.result_data+len+shift) &&
-      ns_ble_copy_report(nsr_target(),report,l.result_data+len,copy,31,&n)==NS_OK)bi(&o->reports);
+      ns_ble_copy_report(nsr_target(),report,l.result_data+len,copy,31,&n)==NS_OK){
+    bi(&o->reports);nsb_receive_copy(o->backend,o->handle.generation,copy,n);
+   }
    /* No address, RSSI or borrowed payload pointer is retained. */
   }
  }
@@ -67,7 +69,7 @@ static ns_u32 bstart_role(struct ns_ble_owner *o,ns_u32 adv) {
  B_WORD((ns_u32)token+off)=(ns_u32)(adv?o->adv_cb:o->scan_cb);
  if(adv && nsr_target()==NS_S4)B_WORD(token)=o->client.client;
  ns_u32 packet[177];
- enum ns_result encoded=adv?ns_ble_adv(nsr_target(),(void*)packet,l.packet_bytes,r->token,o->ad,12):
+ enum ns_result encoded=adv?ns_ble_adv(nsr_target(),(void*)packet,l.packet_bytes,r->token,o->ad,o->ad_length):
      ns_ble_scan(nsr_target(),(void*)packet,l.packet_bytes,r->token);
  if(encoded!=NS_OK){bs(&o->error,12);return 0;}
  r->attempted=1;__atomic_thread_fence(__ATOMIC_RELEASE);
@@ -132,6 +134,8 @@ static enum ns_result bb_start(void *arg,struct ns_manager *m,struct ns_handle h
  r=o->adv_cb;r[0]=12;r[1]=(ns_u32)badv_start;r[2]=(ns_u32)badv_stop;
  o->ad[0]=2;o->ad[1]=1;o->ad[2]=6;o->ad[3]=8;o->ad[4]=9;o->ad[5]='N';o->ad[6]='S';o->ad[7]='5';o->ad[8]='-';
  o->ad[9]=nsr_target()==NS_BAND11?'B':'S';o->ad[10]=nsr_target()==NS_BAND11?'1':'4';o->ad[11]=nsr_target()==NS_BAND11?'1':'S';
+ o->ad_length=12;
+ if(b->custom_ad){o->ad_length=b->ad_length;for(ns_u32 i=0;i<o->ad_length;i++)o->ad[i]=b->ad[i];}
  __atomic_thread_fence(__ATOMIC_RELEASE);
  if(nsp_spawn(&o->tid,nsb_worker,o)){b->error=41;return NS_INVALID;}b->created++;
  if(!o->tid || o->tid==b->ui.tid){b->error=42;return NS_INVALID;}return NS_OK;

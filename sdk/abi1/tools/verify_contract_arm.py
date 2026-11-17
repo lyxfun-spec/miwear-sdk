@@ -15,11 +15,15 @@ R = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--zig', type=Path, required=True)
+    parser.add_argument('--ble', action='store_true', help='Run public BLE service contract with modeled firmware')
     args = parser.parse_args()
     out = R / 'sdk-build'
     out.mkdir(exist_ok=True)
     sources = ['src/ns_session.c', 'src/ns_controller.c', 'src/ns_sdk_flow.c',
                'src/freestanding.c', 'tests/sdk_contract.c', 'tests/contract_model_runtime.c']
+    if args.ble:
+        sources = ['src/ns_session.c', 'src/ns_controller.c', 'src/ns_ble_packet.c',
+                   'src/freestanding.c', 'tests/ble_service_contract.c', 'tests/contract_model_runtime.c']
     objects = []
     for source in sources:
         obj = out / ('contract_' + Path(source).stem + '.o')
@@ -28,7 +32,7 @@ def main():
             '-ffreestanding', '-fno-builtin', '-fno-stack-protector',
             '-fno-unwind-tables', '-fno-asynchronous-unwind-tables',
             '-Wall', '-Wextra', '-Werror', '-I', str(R / 'tests/model-libc'),
-            '-I', str(R / 'include'), '-c', str(R / source), '-o', str(obj)], check=True)
+            '-I', str(R / 'include'), '-I', str(R / 'private'), '-c', str(R / source), '-o', str(obj)], check=True)
         objects.append(obj)
     elf_path = out / 'contract-model.elf'
     subprocess.run([str(args.zig), 'ld.lld', '-T', str(R / 'tests/contract_model.ld'),
@@ -56,11 +60,12 @@ def main():
     machine.reg_write(UC_ARM_REG_LR, 0x400001)
     machine.emu_start(entry, 0, count=2000000)
     cases, checks, failure = [struct.unpack('<I', machine.mem_read(address, 4))[0] for address in values]
-    assert stopped and machine.reg_read(UC_ARM_REG_R0) == 0 and failure == 0 and cases == 13
+    assert stopped and machine.reg_read(UC_ARM_REG_R0) == 0 and failure == 0 and cases == (1 if args.ble else 13), (cases, checks, failure)
     result = dict(cases=cases, checks=checks, failure_line=failure, hardware_tested=False,
-                  scope='Original lifecycle contract assertions executed as ARM; backend evidence modeled',
-                  sources={name: hashlib.sha256((R / name).read_bytes()).hexdigest() for name in sources})
-    (out / 'sdk-contract-verification.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+                  scope='BLE service contract; modeled firmware' if args.ble else 'Original lifecycle contract assertions executed as ARM; backend evidence modeled',
+                  sources={name: hashlib.sha256((R / name).read_bytes()).hexdigest() for name in
+                           sources + (['src/ns_ble_service.c', 'include/ns_ble.h', 'private/ns_ble_backend.h'] if args.ble else [])})
+    (out / ('ble-contract-verification.json' if args.ble else 'sdk-contract-verification.json')).write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result))
 
 

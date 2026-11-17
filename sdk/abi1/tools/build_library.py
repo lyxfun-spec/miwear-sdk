@@ -12,7 +12,7 @@ def main():
  zig=args.zig.resolve();assert subprocess.check_output([str(zig),'version'],text=True).strip()=='0.13.0'
  out=R/'sdk-build';out.mkdir(exist_ok=True)
  public=out/'public-include';public.mkdir(exist_ok=True)
- for name in ['ns_session.h','ns_controller.h','ns_sdk_flow.h']:
+ for name in ['ns_session.h','ns_controller.h','ns_sdk_flow.h','ns_ble.h']:
   shutil.copyfile(R/'include'/name,public/name)
  core_addresses={
  'band11':[0xc3514ec,0xc34cc7c,0xc348784,0xc3487b6,0xc350c54,0xc359764,0xc34cb8c,0xc3abc88,0xc3abdd8,0xc354c4c,0xc92e6da,0xc91ca02,0xc0c181e],
@@ -22,7 +22,7 @@ def main():
  's4':[0x2c7d47e6,0x2c7cbd04,0x2c7c9436,0x2c7c93d4,0x2c8a9d60,0x2c485930,0x2c48588c,0x2c7d6a70,0x2c886420,0x2c886460,0x2c483a20,0x2c483a3c]}
  core_addresses['s4'] += [0x2c796b60,0x2c79693c,0x2c75ee00,0x2c7a23cc,0x2c75c2b0,0x2c4fe910,0x2c506a80,0x2c4dd3c8,0x2c4d9e34,0x2c5862ac]
  flags=['-target','thumb-freestanding-eabi','-mfloat-abi=soft','-Oz','-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-unwind-tables','-fno-asynchronous-unwind-tables','-Wall','-Wextra','-Werror','-I',R/'include','-I',R/'private','-I',out,'-I',R/'platform']
- sources=['src/ns_session.c','src/ns_controller.c','src/ns_ble_packet.c','src/freestanding.c','src/ns_sdk_ble_backend.c','src/ns_sdk_flow.c','src/ns_sdk_page.c','platform/port.c','platform/radio_port.c']
+ sources=['src/ns_session.c','src/ns_controller.c','src/ns_ble_packet.c','src/freestanding.c','src/ns_sdk_ble_backend.c','src/ns_ble_service.c','src/ns_sdk_flow.c','src/ns_sdk_page.c','platform/port.c','platform/radio_port.c']
  records={}
  for target,cpu in [('band11','cortex_m33'),('s4','cortex_m4')]:
   profile=json.loads((R/'reference'/f'{target}-abi-profile.json').read_text(encoding='utf-8'))
@@ -51,6 +51,11 @@ def main():
   example_linked=out/(target+'_public.elf')
   run([zig,'ld.lld','-T',R/'device/sdk_component.ld','-e','example_begin',example,library,'-o',example_linked])
   inspect_elf(example_linked,True)
+  radio_example=out/(target+'_ble_public.o')
+  run([zig,'cc','-target','thumb-freestanding-eabi','-mcpu='+cpu,'-mfloat-abi=soft','-Oz','-ffreestanding','-fno-builtin','-fPIC','-Wall','-Wextra','-Werror','-I',public,'-c',R/'examples/ble_service.c','-o',radio_example])
+  radio_linked=out/(target+'_ble_public.elf')
+  run([zig,'ld.lld','-T',R/'device/sdk_component.ld','-e','ble_demo_begin',radio_example,library,'-o',radio_linked])
+  inspect_elf(radio_linked,True)
   records[target]=dict(library_sha256=sha(library.read_bytes()),ap_sha256=expected,example_linked=True,hardware_tested=False)
  (out/'libraries.json').write_text(json.dumps(records,indent=2)+'\n')
  print(json.dumps(records,indent=2))

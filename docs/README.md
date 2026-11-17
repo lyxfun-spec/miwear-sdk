@@ -5,6 +5,8 @@ AI 接手先读根目录 [AGENTS.md](../AGENTS.md)，再读当前架构和能力
 | 任务 | 入口 |
 |---|---|
 | 理解目录、接口与构建职责 | [工程结构](architecture/工程结构.md) |
+| 独立应用 owner、广播短帧与 ABI 协作 | [独立应用接入](architecture/独立应用接入.md)、[ABI1 BLE 合同](../sdk/abi1/docs/接口合同.md) |
+| 本轮 SDK 改进、验证结果及限制 | [独立应用 SDK 开发候选验证](support/独立应用SDK验证.md) |
 | 确认已验能力和未解决问题 | [当前能力与缺口](support/当前能力与缺口.md)、[验收摘要](support/验收摘要.md) |
 | 配置环境、构建、检查、复现 | [离线构建](build/离线构建.md) |
 | 新增文件、公开选择与维护交接 | [维护流程](maintenance/维护流程.md) |

@@ -29,7 +29,7 @@ def main():
     names = selected_files(ROOT)
     inspect_files(ROOT, names)
     check_git_selection(ROOT)
-    for abi, expected in [('abi1', {'ns_session.h', 'ns_controller.h', 'ns_sdk_flow.h'}),
+    for abi, expected in [('abi1', {'ns_session.h', 'ns_controller.h', 'ns_sdk_flow.h', 'ns_ble.h'}),
                           ('abi3', {'ns_link_v3.h'})]:
         actual = {p.name for p in (ROOT / 'sdk' / abi / 'include').iterdir() if p.is_file()}
         if actual != expected:
@@ -87,6 +87,9 @@ def main():
                   run / 'sdk/abi1/tools/verify_contract_arm.py', '--zig', zig])
             model = json.loads((run / 'sdk/abi1/sdk-build/sdk-contract-verification.json').read_text())
             report['arm_model'] = {k: model[k] for k in ['cases', 'checks', 'failure_line']}
+            stage('abi1-ble-service-arm-model', [sys.executable, '-B', '-s',
+                  run / 'sdk/abi1/tools/verify_contract_arm.py', '--zig', zig, '--ble'])
+            report['ble_model'] = json.loads((run / 'sdk/abi1/sdk-build/ble-contract-verification.json').read_text())
         report['complete'] = True
     finally:
         (run / 'run.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

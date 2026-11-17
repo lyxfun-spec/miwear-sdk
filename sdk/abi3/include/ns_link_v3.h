@@ -17,6 +17,8 @@ enum ns3_result ns3_runtime_open(ns3_runtime**);
 enum ns3_result ns3_runtime_snapshot_get(ns3_runtime*,struct ns3_runtime_snapshot*);
 /* Initialize *out to NULL. An occupied slot is BUSY even after CLOSED_HELD. */
 enum ns3_result ns3_open(const struct ns3_config*,ns3_link**);
+/* Explicit normal reconnect; worker enforces >=500ms backoff internally.
+ * BUSY means current state cannot accept intent; never spin in an observer. */
 enum ns3_result ns3_connect(ns3_link*);
 enum ns3_result ns3_send(ns3_link*,const void*,ns3_u32,ns3_u32);
 enum ns3_result ns3_disconnect(ns3_link*);

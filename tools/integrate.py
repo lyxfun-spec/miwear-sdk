@@ -214,6 +214,7 @@ def main():
             'files': {'lib/' + p.name: sha(p) for p in libdir.iterdir()}})
         stage('abi1-hosts', script(a1, 'tools/build_default.py', '--research', research, '--zig', inputs['zig']))
         stage('abi1-lifecycle-model', script(a1, 'tools/verify_contract_arm.py', '--zig', inputs['zig']))
+        stage('abi1-ble-service-model', script(a1, 'tools/verify_contract_arm.py', '--zig', inputs['zig'], '--ble'))
         stage('abi1-arm-ui-ble-model', script(a1, 'tools/verify_default.py', '--research', research))
         stage('abi1-band-ui-model', script(a1, 'tests/band_default_ui_model.py', '--research', research))
         stage('abi1-relocations', script(a1, 'tools/verify_local_relocations.py', '--research', research))
@@ -292,7 +293,7 @@ def main():
             shutil.copyfile(source, target / 'lib' / source.name)
             if label.startswith('abi1'):
                 shutil.copytree(a1 / 'private', target / 'platform-adapter-include')
-                for public in ['ns_session.h', 'ns_controller.h', 'ns_sdk_flow.h']:
+                for public in ['ns_session.h', 'ns_controller.h', 'ns_sdk_flow.h', 'ns_ble.h']:
                     (target / 'include').mkdir(exist_ok=True)
                     shutil.copyfile(a1 / 'include' / public, target / 'include' / public)
                 shutil.copytree(a1 / 'templates', target / 'platform-component')

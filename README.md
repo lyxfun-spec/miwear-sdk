@@ -21,9 +21,12 @@ Experimental native SDK for selected Xiaomi wearables and exact firmware profile
 选定一条 ABI，先看对应公共头与最小源码示例：
 
 - ABI1：[生命周期示例](sdk/abi1/examples/lifecycle.c)，公共头为 ns_session.h、ns_controller.h、ns_sdk_flow.h。
+- ABI1 公共 BLE 候选：[短帧与应用 owner 示例](sdk/abi1/examples/ble_service.c)、[接口合同](sdk/abi1/docs/接口合同.md)，公共头 ns_ble.h；31 字节 AD、RX8、完整回收后的有间隙换帧，尚无新实机验收。
 - ABI3：[固定通道示例](sdk/abi3/examples/fixed_channel.c)，公共头为 ns_link_v3.h；配套 [接口合同](sdk/abi3/docs/接口合同.md)。
 
 示例需要匹配的宿主和固件后端，不能直接作为桌面程序运行。
+
+独立应用的 owner、退出、ABI 协作及 GATT 后续条件见 [独立应用接入](docs/architecture/独立应用接入.md)。
 
 只检查公开源码，不需要固件或设备：
 

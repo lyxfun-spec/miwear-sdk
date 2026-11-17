@@ -13,6 +13,6 @@ struct ns_ble_owner {
  struct ns_borrowed client;
  struct ns_radio_role scan,adv;
  ns_u32 scan_cb[4],adv_cb[3],sync[10];
- unsigned char ad[12];
+ unsigned char ad[31];ns_u32 ad_length;
 };
 #endif
